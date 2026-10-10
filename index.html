@@ -837,6 +837,44 @@ h1, h2, h3 {
 body:has(#wec-fallback-banner) { padding-top: 36px; }
 
 
+/* ===== V4: 点词释义（gloss.js） ===== */
+.gloss-word {
+  border-bottom: 1px dashed rgba(31, 91, 74, 0.45);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.15s ease;
+}
+.gloss-word:active, .gloss-word:hover { background: rgba(31, 91, 74, 0.10); }
+
+.gloss-popup {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
+  padding: 0 12px calc(14px + env(safe-area-inset-bottom, 0px));
+  animation: glossSlideUp 0.18s ease-out;
+}
+@keyframes glossSlideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.gloss-popup-inner {
+  max-width: 480px; margin: 0 auto;
+  background: var(--color-bg-card, #fff);
+  border-radius: var(--radius-md);
+  box-shadow: 0 -4px 24px rgba(23, 52, 44, 0.18);
+  padding: 16px 18px;
+}
+.gloss-head { display: flex; align-items: center; gap: 10px; }
+.gloss-word-title { font-size: 20px; font-weight: 700; color: var(--color-text); flex: 1; }
+.gloss-audio, .gloss-close {
+  border: none; background: transparent; font-size: 17px; cursor: pointer;
+  padding: 4px 6px; border-radius: 8px; color: var(--color-text-secondary);
+}
+.gloss-audio:active, .gloss-close:active { background: rgba(31, 91, 74, 0.08); }
+.gloss-cn { font-size: 16px; color: var(--color-text); margin-top: 8px; line-height: 1.5; }
+.gloss-cn-none { color: var(--color-text-light); font-size: 14px; }
+.gloss-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+.gloss-known-tag { font-size: 12px; color: var(--color-primary); margin-top: 6px; font-weight: 600; }
+.gloss-actions { display: flex; gap: 8px; margin-top: 12px; }
+
 </style>
 </head>
 <body>
@@ -1532,8 +1570,10 @@ function uuid() {
 // ===== js/algorithm.js =====
 // ===== Spaced Review Algorithm =====
 // 独立、可测试的复习排程模块
-
-const REVIEW_INTERVALS = [0, 1, 3, 7, 14, 30, 60]; // 天
+// V4 重构：
+//  - 接触次数追踪（exposure_count）："背过"不等于"学会"，一个词需要在不同语境接触多次
+//  - 动态调度：以答题对错 + 反应速度为输入，千人千面，取代固定阶梯日历
+//  - 掌握判定：接触 >= 8 次 且 近5次回忆成功率 >= 80% 且 首次接触 >= 3 天
 
 // 四级掌握模型状态
 const MASTERY_STATES = ['New', 'Learning', 'Reviewing', 'Mastered'];
@@ -1548,6 +1588,25 @@ const RATINGS = {
   good: { multiplier: 1, label: '掌握', interval: 3 },
   easy: { multiplier: 1.5, label: '轻松', interval: 7 }
 };
+
+// 答对且反应时间 <= 该阈值（毫秒）视为"快速正确"，间隔按 ease 放大
+const FAST_RESPONSE_MS = 4000;
+// ease 因子边界
+const EASE_DEFAULT = 2.5;
+const EASE_MIN = 1.3;
+
+// ===== 旧记录字段兜底（V3 → V4 迁移，纯内存补齐，不落库 schema 变更） =====
+function _ensureV4Fields(record) {
+  if (typeof record.exposure_count !== 'number' || isNaN(record.exposure_count)) {
+    record.exposure_count = 0;
+  }
+  if (!record.exposure_first_at) record.exposure_first_at = null;
+  if (!Array.isArray(record.recall_history)) record.recall_history = [];
+  if (typeof record.ease !== 'number' || isNaN(record.ease) || record.ease <= 0) {
+    record.ease = EASE_DEFAULT;
+  }
+  return record;
+}
 
 // ===== 初始化掌握记录 =====
 function initMastery(itemId) {
@@ -1578,19 +1637,39 @@ function initMastery(itemId) {
     review_count: 0,
     interval_days: 0,
     next_review_at: Date.now(),
+    // V4 新增：接触追踪 + 回忆历史 + 难度因子
+    exposure_count: 0,
+    exposure_first_at: null,
+    recall_history: [],   // [{ success: bool, ts: number }]，保留最近 30 条
+    ease: EASE_DEFAULT,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
   return record;
 }
 
+// ===== 记录一次接触（纯函数，不落库；调用方负责 dbPut） =====
+// 接触 = 学习卡片查看、测验作答、点词加入学习等任何一次真实遇见
+function noteExposure(record) {
+  _ensureV4Fields(record);
+  record.exposure_count++;
+  if (!record.exposure_first_at) record.exposure_first_at = Date.now();
+  record.updated_at = new Date().toISOString();
+  return record;
+}
+
 // ===== 更新掌握记录 =====
 function updateMastery(record, rating, opts = {}) {
   const { dimension = 'recognition', responseTime = 0, hintUsed = false, answerMode = 'text' } = opts;
+  _ensureV4Fields(record);
 
   record.review_count++;
   record.last_attempt_at = Date.now();
   record.updated_at = new Date().toISOString();
+
+  // 一次测验作答同时计为一次接触
+  record.exposure_count++;
+  if (!record.exposure_first_at) record.exposure_first_at = Date.now();
 
   // 更新反应时间
   const totalTime = record.average_response_time * (record.review_count - 1) + responseTime;
@@ -1609,7 +1688,6 @@ function updateMastery(record, rating, opts = {}) {
   record[evidenceKey]++;
 
   const isCorrect = rating === 'good' || rating === 'easy';
-  const isAgain = rating === 'again';
 
   if (isCorrect) {
     record[correctKey]++;
@@ -1619,8 +1697,21 @@ function updateMastery(record, rating, opts = {}) {
     record.incorrect_count++;
   }
 
+  // V4：回忆历史（驱动掌握判定的"近5次成功率"）
+  record.recall_history.push({ success: isCorrect, ts: Date.now() });
+  if (record.recall_history.length > 30) {
+    record.recall_history = record.recall_history.slice(-30);
+  }
+
+  // V4：ease 难度因子动态调整
+  const fastCorrect = isCorrect && !hintUsed && responseTime > 0 && responseTime <= FAST_RESPONSE_MS;
+  if (!isCorrect) {
+    record.ease = Math.max(EASE_MIN, record.ease - 0.3);
+  } else if (fastCorrect) {
+    record.ease = Math.min(3.2, record.ease + 0.08);
+  }
+
   // 计算维度分数（0-100）
-  // 分数 = 正确率 * 60 + 连续性 * 20 - 提示依赖 * 10 + 速度 * 10 + 证据深度 * 20
   const totalAttempts = record[correctKey] + record[incorrectKey];
   const accuracy = totalAttempts > 0 ? record[correctKey] / totalAttempts : 0;
   const hintPenalty = record.hint_usage_count > 0 ? Math.min(0.15, record.hint_usage_count * 0.03) : 0;
@@ -1636,96 +1727,90 @@ function updateMastery(record, rating, opts = {}) {
   const rawScore = (accuracy * 50 + evidenceBonus * 25 + speedScore * 15 - hintPenalty * 15) * dimWeight;
   record[scoreKey] = Math.max(0, Math.min(100, Math.round(rawScore)));
 
+  // 更新间隔（V4 动态调度：对错 + 反应速度）
+  record.interval_days = computeInterval(record, rating, dimension, hintUsed, responseTime);
+  record.next_review_at = Date.now() + record.interval_days * 86400000;
+
   // 更新整体掌握状态
   record.mastery_state = computeMasteryState(record);
-
-  // 更新间隔
-  record.interval_days = computeInterval(record, rating, dimension, hintUsed);
-  record.next_review_at = Date.now() + record.interval_days * 86400000;
 
   return record;
 }
 
 // ===== 计算掌握状态 =====
+// V4 掌握判定（第一性原理：学会 = 多次接触 + 稳定主动回忆 + 时间沉淀）：
+//   接触 >= 8 次 且 近 5 次回忆成功率 >= 80% 且 首次接触距今 >= 3 天
+// 旧数据兼容：无 exposure/recall_history 时回退到 review_count / 总正确率
 function computeMasteryState(record) {
-  const usageScore = record.usage_score || 0;
-  const transferScore = record.transfer_score || 0;
-  const totalEvidence = (record.recognition_evidence_count || 0) +
-                        (record.recall_evidence_count || 0) +
-                        (record.usage_evidence_count || 0) +
-                        (record.transfer_evidence_count || 0);
+  _ensureV4Fields(record);
 
-  // Mastered 需要 Usage 和 Transfer 多次稳定通过
-  if (usageScore >= 70 && transferScore >= 60 &&
-      record.usage_evidence_count >= 3 && record.transfer_evidence_count >= 2) {
+  const exposure = record.exposure_count > 0 ? record.exposure_count : (record.review_count || 0);
+  const firstAt = record.exposure_first_at ||
+    (record.created_at ? Date.parse(record.created_at) : Date.now());
+  const daysSinceFirst = (Date.now() - firstAt) / 86400000;
+
+  // 近 5 次回忆成功率
+  const hist = record.recall_history;
+  let recallOk = false;
+  if (hist.length >= 5) {
+    const last5 = hist.slice(-5);
+    recallOk = last5.filter(h => h.success).length / 5 >= 0.8;
+  } else if (hist.length === 0) {
+    // 旧数据回退：用累计正确率，且要求至少 5 次作答
+    const tot = (record.correct_count || 0) + (record.incorrect_count || 0);
+    recallOk = tot >= 5 && (record.correct_count || 0) / tot >= 0.8;
+  }
+  // hist 1~4 条：回忆证据不足，不允许判 Mastered
+
+  if (exposure >= 8 && recallOk && daysSinceFirst >= 3) {
     return 'Mastered';
   }
 
-  // Reviewing: 有足够的 recognition 和 recall 证据
+  // Reviewing: 有足够的 recall 证据
   if (record.recall_score >= 50 && record.recall_evidence_count >= 2) {
     return 'Reviewing';
   }
 
   // Learning: 有开始学习
-  if (totalEvidence >= 1) {
+  const totalEvidence = (record.recognition_evidence_count || 0) +
+                        (record.recall_evidence_count || 0) +
+                        (record.usage_evidence_count || 0) +
+                        (record.transfer_evidence_count || 0);
+  if (totalEvidence >= 1 || exposure >= 1) {
     return 'Learning';
   }
 
   return 'New';
 }
 
-// ===== 计算复习间隔 =====
-function computeInterval(record, rating, dimension, hintUsed) {
-  const ratingData = RATINGS[rating];
+// ===== 计算复习间隔（V4 动态调度） =====
+// 输入：对错 + 反应速度 + ease 因子；不再使用固定阶梯日历
+//   答错        → 1 天（ease 已在 updateMastery 中 -0.3，下限 1.3）
+//   答对且快    → base × ease
+//   答对但慢/用提示 → base × 1.5
+//   base = 上次间隔 > 0 ? 上次间隔 : 1
+function computeInterval(record, rating, dimension, hintUsed, responseTime) {
+  _ensureV4Fields(record);
 
-  // Again: 当天或次日
-  if (rating === 'again') return 0;
+  if (rating === 'again') return 1;
 
-  // 获取当前间隔索引
-  let intervalIdx = 0;
-  for (let i = REVIEW_INTERVALS.length - 1; i >= 0; i--) {
-    if (record.interval_days >= REVIEW_INTERVALS[i]) { intervalIdx = i; break; }
+  const prev = (typeof record.interval_days === 'number' && record.interval_days > 0)
+    ? record.interval_days : 0;
+  const base = prev > 0 ? prev : 1;
+
+  const isCorrect = rating === 'good' || rating === 'easy';
+  const fastCorrect = isCorrect && !hintUsed &&
+    responseTime > 0 && responseTime <= FAST_RESPONSE_MS;
+
+  let interval;
+  if (fastCorrect) {
+    interval = Math.round(base * record.ease);
+  } else {
+    // 答对但慢、hard、或用提示：温和推进
+    interval = Math.round(base * 1.5);
   }
 
-  // 根据评分调整
-  let newIdx;
-  if (rating === 'hard') {
-    newIdx = Math.max(0, intervalIdx); // 不前进
-  } else if (rating === 'good') {
-    newIdx = Math.min(REVIEW_INTERVALS.length - 1, intervalIdx + 1);
-  } else { // easy
-    newIdx = Math.min(REVIEW_INTERVALS.length - 1, intervalIdx + 2);
-  }
-
-  let interval = REVIEW_INTERVALS[newIdx];
-
-  // 使用提示后答对：间隔减少
-  if (hintUsed && rating !== 'again') {
-    interval = Math.max(1, Math.round(interval * 0.5));
-  }
-
-  // 主动回忆（recall）比识别（recognition）提升更高
-  if (dimension === 'recall' && rating === 'good') {
-    interval = Math.round(interval * 1.2);
-  }
-
-  // Usage 成功：间隔提升
-  if (dimension === 'usage' && (rating === 'good' || rating === 'easy')) {
-    interval = Math.round(interval * 1.3);
-  }
-
-  // Transfer 成功：最高质量提升
-  if (dimension === 'transfer' && (rating === 'good' || rating === 'easy')) {
-    interval = Math.round(interval * 1.5);
-  }
-
-  // 连续正确：逐步延长
-  const recentCorrect = Math.min(5, record.correct_count - record.incorrect_count);
-  if (recentCorrect > 2) {
-    interval = Math.round(interval * (1 + recentCorrect * 0.05));
-  }
-
-  return Math.max(0, interval);
+  return Math.max(1, interval);
 }
 
 // ===== Learning Priority Score =====
@@ -1831,11 +1916,12 @@ async function getNewItemsForToday(settings, count) {
 
 // ===== 算法模块导出 =====
 window.WEC_Algo = {
-  REVIEW_INTERVALS,
   MASTERY_STATES,
   MASTERY_DIMENSIONS,
   RATINGS,
+  FAST_RESPONSE_MS,
   initMastery,
+  noteExposure,
   updateMastery,
   computeMasteryState,
   computeInterval,
@@ -1843,6 +1929,294 @@ window.WEC_Algo = {
   getDueReviewItems,
   getNewItemsForToday
 };
+
+// ===== js/gloss.js =====
+// ===== Gloss Module — 全局点词释义 =====
+// V4 新增。解决体验问题：句子里有不认识的单词，点一下就能看到汉语意思，
+// 并可标记"认识了"或"加入学习队列"（进入明天的单词学习）。
+//
+// 设计依据：
+//  - 语境学习 > 孤立词表：释义绑定当前句子，加入队列时自动把原句存为例句
+//  - 接触追踪：加入队列的词进入 exposure 体系，"查过"不等于"学会"
+//
+// 用法：Gloss.glossify(text) 把英文文本中的词包成可点击 span；
+// 仅用于展示性文本（例句、听力原文、参考答案、KB 词条），
+// 绝不可用于测验选项按钮（会泄露答案）。
+
+(function () {
+  const LS_QUEUE = 'wec_user_queue';     // 用户点词学习队列（词 id 数组）
+  const LS_CUSTOM = 'wec_custom_words';  // 词库外的用户自定义词条
+  const LS_KNOWN = 'wec_gloss_known';    // 点词标记"认识了"的词
+
+  // --- 内置常用功能词小词典（词库之外的高频词，保证点词基本有回应） ---
+  const FUNCTION_WORDS = {
+    'the': '这/那（定冠词）', 'a': '一个（不定冠词）', 'an': '一个（不定冠词）',
+    'is': '是（be 的第三人称单数）', 'are': '是（be 的复数/第二人称）',
+    'was': '是（be 的过去式）', 'were': '是（be 的过去式复数）',
+    'be': '是；存在', 'been': '是（be 的过去分词）', 'being': '存在；是（be 的现在分词）',
+    'to': '到；向（介词/不定式标记）', 'of': '……的', 'in': '在……里', 'on': '在……上',
+    'at': '在（某地/某时）', 'for': '为了；对于', 'with': '和；用', 'by': '通过；被',
+    'from': '从；自', 'as': '作为；如同', 'and': '和；并且', 'or': '或者',
+    'but': '但是', 'if': '如果', 'then': '那么；然后', 'than': '比',
+    'so': '所以；如此', 'such': '这样的', 'that': '那；那个', 'this': '这；这个',
+    'these': '这些', 'those': '那些', 'it': '它', 'its': '它的',
+    'i': '我', 'you': '你；你们', 'he': '他', 'she': '她', 'we': '我们', 'they': '他们',
+    'me': '我（宾格）', 'him': '他（宾格）', 'her': '她（宾格）；她的',
+    'us': '我们（宾格）', 'them': '他们（宾格）',
+    'my': '我的', 'your': '你的；你们的', 'his': '他的', 'our': '我们的', 'their': '他们的',
+    'not': '不；没有', 'no': '不；没有', 'yes': '是的',
+    'do': '做（助动词）', 'does': '做（do 的第三人称单数）', 'did': '做（do 的过去式）',
+    'have': '有；已经（助动词）', 'has': '有（have 的第三人称单数）', 'had': '有（have 的过去式）',
+    'will': '将要', 'would': '会；愿意', 'can': '能；可以', 'could': '能（can 的过去式）',
+    'should': '应该', 'shall': '将要；应该', 'may': '可能；可以', 'might': '可能（may 的过去式）',
+    'must': '必须', 'get': '得到；变得', 'got': '得到（get 的过去式）',
+    'make': '制作；使得', 'made': '制作（make 的过去式）', 'take': '拿；花费', 'took': '拿（take 的过去式）',
+    'go': '去', 'went': '去（go 的过去式）', 'come': '来', 'came': '来（come 的过去式）',
+    'know': '知道', 'think': '认为；想', 'say': '说', 'said': '说（say 的过去式）',
+    'see': '看见', 'look': '看', 'use': '使用', 'used': '使用（use 的过去式）；习惯于',
+    'work': '工作', 'time': '时间', 'day': '天；日', 'week': '周', 'year': '年',
+    'way': '方式；路', 'thing': '事情；东西', 'people': '人们',
+    'good': '好的', 'bad': '坏的', 'new': '新的', 'old': '旧的；老的',
+    'first': '第一的', 'last': '最后的；上一个', 'long': '长的', 'great': '伟大的；很好的',
+    'little': '小的；少的', 'own': '自己的', 'other': '其他的', 'right': '正确的；右边',
+    'big': '大的', 'high': '高的', 'different': '不同的', 'small': '小的', 'large': '大的',
+    'next': '下一个', 'early': '早的', 'important': '重要的', 'few': '少数的',
+    'same': '相同的', 'able': '能够的',
+    'up': '向上', 'down': '向下', 'out': '向外', 'off': '离开；关掉',
+    'over': '在……之上；结束', 'under': '在……之下', 'again': '再一次', 'still': '仍然',
+    'just': '只是；刚刚', 'now': '现在', 'only': '只有', 'very': '非常', 'even': '甚至',
+    'also': '也', 'back': '回来；背面', 'any': '任何的', 'some': '一些', 'many': '许多',
+    'much': '很多（不可数）', 'more': '更多', 'most': '最多；大多数', 'all': '全部',
+    'each': '每个', 'every': '每一个', 'both': '两者都',
+    'here': '这里', 'there': '那里', 'where': '哪里', 'when': '什么时候',
+    'what': '什么', 'which': '哪一个', 'who': '谁', 'how': '怎样', 'why': '为什么',
+    'because': '因为', 'about': '关于；大约', 'into': '进入', 'through': '穿过',
+    'during': '在……期间', 'before': '在……之前', 'after': '在……之后',
+    'between': '在……之间', 'while': '当……时候', 'until': '直到', 'please': '请',
+    'thanks': '谢谢', 'thank': '谢谢', 'ok': '好的', 'etc': '等等'
+  };
+
+  // --- 工具 ---
+  function _esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function _readLS(key, fallback) {
+    try {
+      const v = JSON.parse(localStorage.getItem(key) || 'null');
+      return v == null ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+
+  function _writeLS(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+
+  // 词形还原尝试：原词 → 去 's → 去复数 s → 去 ed/ing
+  function _lemmaCandidates(word) {
+    const w = String(word || '').toLowerCase().replace(/[’']s$/, '');
+    const cands = [w];
+    if (w.endsWith("'s")) cands.push(w.slice(0, -2));
+    if (w.endsWith('s') && w.length > 3) cands.push(w.slice(0, -1));
+    if (w.endsWith('es') && w.length > 3) cands.push(w.slice(0, -2));
+    if (w.endsWith('ed') && w.length > 4) { cands.push(w.slice(0, -2)); cands.push(w.slice(0, -1)); }
+    if (w.endsWith('ing') && w.length > 5) { cands.push(w.slice(0, -3)); cands.push(w.slice(0, -3) + 'e'); }
+    return [...new Set(cands)];
+  }
+
+  // --- 词库索引（惰性构建） ---
+  let _vocabIndex = null;
+  function _buildVocabIndex() {
+    if (_vocabIndex) return _vocabIndex;
+    _vocabIndex = new Map();
+    if (typeof VOCAB_ITEMS !== 'undefined' && Array.isArray(VOCAB_ITEMS)) {
+      for (const item of VOCAB_ITEMS) {
+        if (item.word) _vocabIndex.set(String(item.word).toLowerCase(), item);
+        if (item.lemma) {
+          const key = String(item.lemma).toLowerCase();
+          if (!_vocabIndex.has(key)) _vocabIndex.set(key, item);
+        }
+      }
+    }
+    // 用户自定义词也进索引
+    const custom = _readLS(LS_CUSTOM, []);
+    if (Array.isArray(custom)) {
+      for (const item of custom) {
+        if (item.word) _vocabIndex.set(String(item.word).toLowerCase(), item);
+      }
+    }
+    return _vocabIndex;
+  }
+
+  /**
+   * 查词：返回 { chinese, source: 'vocab'|'dict'|'none', item? }
+   */
+  function lookup(rawWord) {
+    const index = _buildVocabIndex();
+    for (const cand of _lemmaCandidates(rawWord)) {
+      const item = index.get(cand);
+      if (item) {
+        return { chinese: item.chinese || item.work_meaning || '', source: 'vocab', item };
+      }
+    }
+    for (const cand of _lemmaCandidates(rawWord)) {
+      if (FUNCTION_WORDS[cand]) return { chinese: FUNCTION_WORDS[cand], source: 'dict' };
+    }
+    return { chinese: '', source: 'none' };
+  }
+
+  /**
+   * 把英文文本中的词包成可点击 span（输出已是 HTML 转义后的安全字符串）。
+   * 注意：转义产生的实体（&lt; &amp; 等）必须原样跳过，不能被包装打碎。
+   */
+  function glossify(text) {
+    const safe = _esc(text);
+    return safe.replace(/&(?:amp|lt|gt|quot|#39);|[A-Za-z][A-Za-z'’-]*/g, (m) =>
+      m.charAt(0) === '&'
+        ? m
+        : `<span class="gloss-word" data-w="${m}">${m}</span>`
+    );
+  }
+
+  // --- 底部弹出卡片 ---
+  let _popupEl = null;
+
+  function _closePopup() {
+    if (_popupEl) { _popupEl.remove(); _popupEl = null; }
+  }
+
+  function _showPopup(word, sentence) {
+    _closePopup();
+    const result = lookup(word);
+    const known = _readLS(LS_KNOWN, []);
+    const isKnown = Array.isArray(known) && known.includes(word.toLowerCase());
+
+    let meaningHTML;
+    if (result.source === 'vocab') {
+      const wm = result.item.work_meaning && result.item.work_meaning !== result.chinese
+        ? `<div class="gloss-sub">工作语境：${_esc(result.item.work_meaning)}</div>` : '';
+      meaningHTML = `<div class="gloss-cn">${_esc(result.chinese)}</div>${wm}`;
+    } else if (result.source === 'dict') {
+      meaningHTML = `<div class="gloss-cn">${_esc(result.chinese)}</div>`;
+    } else {
+      meaningHTML = `<div class="gloss-cn gloss-cn-none">暂未收录该词，可加入学习队列稍后补充</div>`;
+    }
+
+    const el = document.createElement('div');
+    el.className = 'gloss-popup';
+    el.innerHTML = `
+      <div class="gloss-popup-inner">
+        <div class="gloss-head">
+          <span class="gloss-word-title">${_esc(word)}</span>
+          <button class="gloss-audio" data-act="speak" title="播放发音">🔊</button>
+          <button class="gloss-close" data-act="close">✕</button>
+        </div>
+        ${meaningHTML}
+        ${isKnown ? '<div class="gloss-known-tag">✓ 已标记认识</div>' : ''}
+        <div class="gloss-actions">
+          <button class="btn btn-ghost btn-sm flex-1" data-act="known">认识了</button>
+          <button class="btn btn-primary btn-sm flex-1" data-act="queue">加入学习队列</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(el);
+    _popupEl = el;
+
+    el.addEventListener('click', (e) => {
+      const act = e.target.closest('[data-act]');
+      if (!act) return;
+      e.stopPropagation();
+      const action = act.getAttribute('data-act');
+      if (action === 'close') {
+        _closePopup();
+      } else if (action === 'speak') {
+        try {
+          if (typeof SpeechUtils !== 'undefined' && SpeechUtils.speak) {
+            SpeechUtils.speak(word, { rate: 0.9 });
+          }
+        } catch (err) {}
+      } else if (action === 'known') {
+        const list = _readLS(LS_KNOWN, []);
+        const lw = word.toLowerCase();
+        if (Array.isArray(list) && !list.includes(lw)) {
+          list.push(lw);
+          _writeLS(LS_KNOWN, list);
+        }
+        if (typeof showToast === 'function') showToast(`已标记「${word}」为认识`);
+        _closePopup();
+      } else if (action === 'queue') {
+        _addToQueue(word, sentence, result);
+        _closePopup();
+      }
+    });
+  }
+
+  function _addToQueue(word, sentence, result) {
+    const queue = _readLS(LS_QUEUE, []);
+    const qArr = Array.isArray(queue) ? queue : [];
+    let vocabId;
+
+    if (result.source === 'vocab' && result.item && result.item.id) {
+      vocabId = result.item.id;
+    } else {
+      // 词库外：创建自定义词条，例句绑定点击时的真实语境
+      vocabId = 'u-' + word.toLowerCase();
+      const custom = _readLS(LS_CUSTOM, []);
+      const cArr = Array.isArray(custom) ? custom : [];
+      if (!cArr.some(c => c.id === vocabId)) {
+        cArr.push({
+          id: vocabId,
+          word: word,
+          lemma: word.toLowerCase(),
+          pos: '',
+          chinese: result.chinese || '（待补充释义）',
+          work_meaning: result.chinese || '',
+          example_en: sentence || '',
+          example_cn: '',
+          day: 0,
+          work_relevance: 3,
+          custom: true
+        });
+        _writeLS(LS_CUSTOM, cArr);
+      }
+    }
+
+    if (!qArr.includes(vocabId)) {
+      qArr.push(vocabId);
+      _writeLS(LS_QUEUE, qArr);
+      if (typeof showToast === 'function') showToast(`「${word}」已加入学习队列，明天见`);
+    } else {
+      if (typeof showToast === 'function') showToast(`「${word}」已在学习队列中`);
+    }
+  }
+
+  // --- 全局点击委托 ---
+  document.addEventListener('click', (e) => {
+    const span = e.target.closest && e.target.closest('.gloss-word');
+    if (span) {
+      e.preventDefault();
+      e.stopPropagation();
+      const word = span.getAttribute('data-w') || span.textContent;
+      // 抓取所在句子作为语境（加入队列时存为例句）
+      let sentence = '';
+      const block = span.closest('p, .word-example, .ea-value, .listening-text, .kb-content, div');
+      if (block) sentence = (block.textContent || '').trim().slice(0, 300);
+      _showPopup(word, sentence);
+      return;
+    }
+    // 点击弹窗外部：关闭
+    if (_popupEl && !e.target.closest('.gloss-popup')) _closePopup();
+  }, true);
+
+  // 导出
+  window.Gloss = {
+    glossify,
+    lookup,
+    FUNCTION_WORDS
+  };
+})();
 
 // ===== js/lessons-data.js =====
 // ===== Course Data: 28 Days of Work English =====
@@ -7363,6 +7737,13 @@ async function renderToday(app) {
   const dueItems = await WEC_Algo.getDueReviewItems();
   const dueCount = dueItems.length;
 
+  // V4：北极星指标 = 真正掌握的词数（对齐"学会"而非"打开"）
+  let masteredCount = 0;
+  try {
+    const allMastery = await dbGetAll(STORES.masteryRecords);
+    masteredCount = allMastery.filter(m => m.mastery_state === 'Mastered').length;
+  } catch (e) {}
+
   // 获取本周学习天数
   let weekStudyDays = 0;
   for (let d = (week-1)*7+1; d <= studyDay; d++) {
@@ -7383,8 +7764,8 @@ async function renderToday(app) {
       </div>
 
       <div style="text-align:center; padding: 20px 0;">
-        <div style="font-size: 48px; font-weight: 700; color: var(--color-primary); font-family: Georgia, serif;">${studyDay}<span style="font-size:20px; color: var(--color-text-light);">/168</span></div>
-        <div class="text-secondary text-sm mt-sm">连续学习 ${appSettings.streakDays || 0} 天</div>
+        <div style="font-size: 48px; font-weight: 700; color: var(--color-primary); font-family: Georgia, serif;">${masteredCount}<span style="font-size:20px; color: var(--color-text-light);"> 词</span></div>
+        <div class="text-secondary text-sm mt-sm">已真正掌握 · Day ${studyDay}/168 · 连续 ${appSettings.streakDays || 0} 天</div>
       </div>
 
       <div class="card card-hero">
@@ -7393,7 +7774,7 @@ async function renderToday(app) {
         <div class="text-light text-xs mt-sm">${lesson.theme_en}</div>
         <div style="margin-top: 12px; display:flex; gap:8px; align-items:center; flex-wrap: wrap;">
           <span class="badge badge-mint">⏱ 25 分钟</span>
-          <span class="badge ${dueCount > 0 ? 'badge-coral' : 'badge-mint'}">📝 ${dueCount > 0 ? dueCount + ' 个待复习' : '5 个预复习'}</span>
+          <span class="badge badge-mint">📝 ${dueCount > 0 ? dueCount + ' 个词想见你 · 按记忆节奏来就好' : '今日复习已清空'}</span>
           <span class="badge badge-mint">🔤 今日词汇 6–10 个新词 + 复习</span>
         </div>
       </div>
@@ -7622,6 +8003,7 @@ function renderListeningPhase(app) {
         </div>
 
         <div class="flex gap-md mt-lg">
+          ${listeningState.mode === 'study' ? '<button class="btn btn-ghost flex-1" onclick="listeningBack()">← 上一步</button>' : ''}
           <button class="btn btn-outline flex-1" onclick="navTo('today')">退出</button>
         </div>
       </div>
@@ -7664,6 +8046,10 @@ function renderListeningPhase(app) {
           </div>
         </div>
 
+        <div class="flex gap-md">
+          <button class="btn btn-ghost btn-sm" onclick="listeningBack()">← 上一步：再听一遍</button>
+        </div>
+
         <div class="card" id="comprehension-feedback" style="display:none;">
           <div id="feedback-content"></div>
           <button class="btn btn-primary btn-block mt-md" onclick="nextComprehension()" id="next-q-btn">${qIdx < questions.length - 1 ? '下一题 →' : '听第二遍 →'}</button>
@@ -7692,22 +8078,22 @@ function renderListeningPhase(app) {
           </div>
         </div>
 
-        <button class="btn btn-primary btn-block btn-lg mt-lg" onclick="revealListeningText()">显示全文 →</button>
+        <div class="flex gap-md mt-lg">
+          <button class="btn btn-ghost flex-1" onclick="listeningBack()">← 上一步</button>
+          <button class="btn btn-primary flex-1" onclick="revealListeningText()">显示全文 →</button>
+        </div>
       </div>
     `;
     return;
   }
 
-  // 显示全文 + 关键词高亮 + 跟读 + 复述
+  // 显示全文 + 点词释义 + 跟读 + 复述
   if (listeningState.phase === 'reveal') {
-    let highlightedText = listening.text;
-    if (keywords && keywords.length > 0) {
-      keywords.forEach(kw => {
-        const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp('(' + escaped + ')', 'gi');
-        highlightedText = highlightedText.replace(regex, '<span class="listening-highlight">$1</span>');
-      });
-    }
+    // V4：原文整体点词化（点击任意单词弹释义），取代仅高亮关键词——
+    // 避免嵌套 span 冲突，且"不认识的词随手可查"才符合语境学习
+    const glossText = (typeof Gloss !== 'undefined' && Gloss.glossify)
+      ? Gloss.glossify(listening.text)
+      : listening.text;
 
     app.innerHTML = `
       <div class="container page">
@@ -7718,8 +8104,8 @@ function renderListeningPhase(app) {
         </div>
 
         <div class="card">
-          <div class="text-secondary text-sm mb-sm">听力全文（关键词已高亮）</div>
-          <div class="listening-text" style="line-height: 1.8; font-size: 17px;">${highlightedText}</div>
+          <div class="text-secondary text-sm mb-sm">听力全文（点击任意单词可查释义）</div>
+          <div class="listening-text" style="line-height: 1.8; font-size: 17px;">${glossText}</div>
           <div class="flex gap-sm mt-md" style="flex-wrap: wrap;">
             <button class="btn btn-ghost btn-sm" onclick="SpeechUtils.speak('${listening.text.replace(/'/g, "\\'")}', {rate: 1.0})">🔊 朗读全文</button>
             <button class="btn btn-ghost btn-sm" onclick="playListeningFast()">⚡ 1.15× 挑战速</button>
@@ -7741,6 +8127,7 @@ function renderListeningPhase(app) {
         </div>
 
         <div class="flex gap-md mt-lg">
+          <button class="btn btn-ghost flex-1" onclick="listeningBack()">← 上一步</button>
           <button class="btn btn-outline flex-1" onclick="navTo('today')">退出</button>
           <button class="btn btn-primary flex-1" onclick="nextSessionStep()">下一步：复习 →</button>
         </div>
@@ -7821,6 +8208,22 @@ function answerComprehension(optionIdx) {
     }
   });
 
+  // V4：答错给解析——定位原文依据句 + 点词释义 + 可重听
+  let explainHTML = '';
+  if (!isCorrect) {
+    const srcSentence = _findSourceSentence(lesson.listening.text || '', q.a);
+    listeningState.lastExplainSentence = srcSentence;
+    const glossSentence = (typeof Gloss !== 'undefined' && Gloss.glossify)
+      ? Gloss.glossify(srcSentence) : srcSentence;
+    explainHTML = `
+      <div class="mt-md" style="padding:10px 12px; background: var(--color-bg-subtle); border-radius: 10px;">
+        <div class="text-light text-xs mb-sm">📍 答案出自原文这句：</div>
+        <div style="font-size:15px; line-height:1.7;">${glossSentence}</div>
+        <button class="btn btn-ghost btn-sm mt-sm" onclick="replayExplainSentence()">🔊 重听这句</button>
+      </div>
+    `;
+  }
+
   // 显示反馈
   const fb = document.getElementById('comprehension-feedback');
   const fbContent = document.getElementById('feedback-content');
@@ -7830,9 +8233,45 @@ function answerComprehension(optionIdx) {
         ${isCorrect ? '✓ 正确！' : '✗ 不正确'}
       </div>
       <div class="text-secondary text-sm mt-sm">正确答案：${q.a}</div>
+      ${explainHTML}
     `;
     fb.style.display = 'block';
   }
+}
+
+// V4：在原文中定位与正确答案词重叠最多的句子（作为答错解析的依据句）
+function _findSourceSentence(text, answerText) {
+  const sentences = String(text).match(/[^.!?]+[.!?]+/g) || [String(text)];
+  const answerWords = String(answerText || '')
+    .toLowerCase().replace(/[^a-z0-9'\s]/g, ' ')
+    .split(/\s+/).filter(w => w.length > 2);
+  let best = sentences[0], bestScore = -1;
+  for (const s of sentences) {
+    const lower = s.toLowerCase();
+    let score = 0;
+    for (const w of answerWords) if (lower.includes(w)) score++;
+    if (score > bestScore) { bestScore = score; best = s; }
+  }
+  return best.trim();
+}
+
+// V4：重听解析句（0.9x，略慢于常速便于对照）
+function replayExplainSentence() {
+  if (listeningState.lastExplainSentence) {
+    SpeechUtils.speak(listeningState.lastExplainSentence, { rate: 0.9 });
+  }
+}
+
+// V4：听力阶段回退——任何一步都可以回上一步重听/重做
+// listen1 → keywords（仅学习模式）；questions → listen1（保留答题进度）；
+// listen2 → listen1；reveal → listen2
+function listeningBack() {
+  const map = { listen1: 'keywords', questions: 'listen1', listen2: 'listen1', reveal: 'listen2' };
+  const prev = map[listeningState.phase];
+  if (!prev) return;
+  if (prev === 'keywords' && listeningState.mode === 'test') return; // 测试模式无关键词页
+  listeningState.phase = prev;
+  renderListeningPhase(document.getElementById('app'));
 }
 
 function nextComprehension() {
@@ -8646,8 +9085,8 @@ async function renderWorkPractice(app, params) {
       </div>
 
       <div class="card" id="wp-result" style="display:none;">
-        <div class="text-secondary text-sm mb-sm">参考答案</div>
-        <div style="font-size: 16px; line-height: 1.7; padding: 12px; background: var(--color-bg-subtle); border-radius: 8px;">${wp.reference}</div>
+        <div class="text-secondary text-sm mb-sm">参考答案（点击单词可查释义）</div>
+        <div style="font-size: 16px; line-height: 1.7; padding: 12px; background: var(--color-bg-subtle); border-radius: 8px;">${(typeof Gloss !== 'undefined' && Gloss.glossify) ? Gloss.glossify(wp.reference) : wp.reference}</div>
 
         ${wp.followUps && wp.followUps.length > 0 ? `
         <div class="text-secondary text-sm mt-md mb-sm">追问与参考</div>
@@ -9191,7 +9630,7 @@ function renderKBItem(item, mastery) {
     <div class="card card-clickable" onclick="editKBItem('${item.id}')">
       <div class="flex justify-between items-start">
         <div style="flex: 1; min-width: 0;">
-          <div style="font-weight: 600; font-size: 16px;">${item.english}</div>
+          <div style="font-weight: 600; font-size: 16px;">${(typeof Gloss !== 'undefined' && Gloss.glossify) ? Gloss.glossify(item.english) : item.english}</div>
           <div class="text-secondary text-sm">${item.chinese}</div>
           <div class="flex gap-sm mt-sm">
             <span class="badge badge-gray">${item.type}</span>
@@ -9360,11 +9799,13 @@ function renderErrorItem(e) {
   var lastDate = e.last_seen_at ? new Date(e.last_seen_at).toLocaleDateString('zh-CN') : '—';
   var nextDate = e.next_review_at ? new Date(e.next_review_at).toLocaleDateString('zh-CN') : '—';
 
+  var glossFn = (typeof Gloss !== 'undefined' && Gloss.glossify) ? Gloss.glossify : function (s) { return s; };
+
   return `
     <div class="error-bank-card ${e.resolved ? 'resolved' : ''}">
       <div class="eb-header">
         <div>
-          <div class="eb-word">${title}</div>
+          <div class="eb-word">${glossFn(title)}</div>
           <div class="eb-type">${subtitle}</div>
         </div>
         <div style="text-align: right;">
@@ -9374,7 +9815,7 @@ function renderErrorItem(e) {
       </div>
       <div class="eb-detail">
         <div style="color: var(--color-coral);">你的答案：${userAns}</div>
-        <div style="color: var(--color-primary);">正确答案：${correctAns}</div>
+        <div style="color: var(--color-primary);">正确答案：${glossFn(correctAns)}</div>
         ${expl ? `<div style="margin-top: 6px; padding: 8px 10px; background: var(--color-bg-subtle); border-radius: 10px; font-size: 13px; line-height: 1.6;">💡 ${expl}</div>` : ''}
       </div>
       <div class="text-light text-xs" style="margin-top: 6px;">
@@ -10262,6 +10703,34 @@ async function getDailyVocabWords(day) {
   // --- new words for current day ---
   newWords = VOCAB_ITEMS.filter(v => v.day === day);
 
+  // --- V4：用户点词加入的学习队列（gloss.js 写入 localStorage） ---
+  let userQueueWords = [];
+  try {
+    const queueIds = JSON.parse(localStorage.getItem('wec_user_queue') || '[]');
+    const customWords = JSON.parse(localStorage.getItem('wec_custom_words') || '[]');
+    if (Array.isArray(queueIds) && queueIds.length > 0) {
+      const masteredIds = new Set();
+      try {
+        const allMastery = await dbGetAll(STORES.masteryRecords);
+        allMastery.forEach(m => { if (m.mastery_state === 'Mastered') masteredIds.add(m.item_id); });
+      } catch (e) {}
+      const remaining = [];
+      for (const id of queueIds) {
+        // 词库词或用户自定义词
+        const v = VOCAB_ITEMS.find(item => item.id === id) ||
+                  customWords.find(item => item.id === id);
+        if (!v) continue;
+        if (masteredIds.has(id)) continue; // 已掌握则移出队列
+        userQueueWords.push(v);
+        remaining.push(id);
+      }
+      // 写回（剔除已掌握/失效的）
+      localStorage.setItem('wec_user_queue', JSON.stringify(remaining));
+    }
+  } catch (e) {
+    console.warn('[vocab] user queue merge failed', e);
+  }
+
   // --- selection rules (V3: adaptive new-word count 6/8/10 by recent accuracy) ---
   const dueCount = dueReviews.length;
 
@@ -10286,8 +10755,10 @@ async function getDailyVocabWords(day) {
   if (recentAccuracy !== null && recentAccuracy < 0.7) newMax = 6;      // struggling: slow down
   else if (recentAccuracy !== null && recentAccuracy > 0.9) newMax = 10; // cruising: speed up
   else newMax = 8;                                                        // default sustainable pace
-  // heavy review load further trims new words
-  if (dueCount > 12) newMax = Math.min(newMax, 6);
+  // V4：复习:新学 ≈ 3:1 —— 复习量主导新词配额，防止复习队列雪崩
+  // （仅在复习积压时收紧；复习很少时不限制新词，保证学习推进）
+  if (dueCount > 30) newMax = 0;                                            // 队列雪崩：暂停新词，先清复习
+  else if (dueCount >= 6) newMax = Math.min(newMax, Math.max(5, Math.ceil(dueCount / 3)));
 
   // Deduplicate: build a map to avoid the same word appearing twice
   const wordMap = new Map();
@@ -10300,7 +10771,17 @@ async function getDailyVocabWords(day) {
     if (!wordMap.has(v.id)) wordMap.set(v.id, v);
   }
 
-  // priority 3: new words (up to newMax, and respect total cap of 20)
+  // priority 3: 用户点词队列（主动想学的词优先于排期新词，上限 3 个/天）
+  let userAdded = 0;
+  for (const v of userQueueWords) {
+    if (userAdded >= 3) break;
+    if (!wordMap.has(v.id)) {
+      wordMap.set(v.id, v);
+      userAdded++;
+    }
+  }
+
+  // priority 4: new words (up to newMax, and respect total cap of 20)
   let newAdded = 0;
   for (const v of newWords) {
     if (newAdded >= newMax) break;
@@ -10353,6 +10834,8 @@ async function startVocabSession(day) {
       return;
     }
 
+    await _preloadMasteryCache(words); // V4：en2cn 首触判定需要
+
     vocabSession = {
       day: day,
       phase: 'precheck',
@@ -10392,6 +10875,8 @@ async function startVocabRetry(vocabIds) {
       showToast('未找到对应单词');
       return;
     }
+
+    await _preloadMasteryCache(words); // V4：en2cn 首触判定需要
 
     vocabSession = {
       day: 0,
@@ -10598,6 +11083,7 @@ function renderVocabLearn(app) {
   }
 
   const v = words[idx];
+  _noteExposureAsync(v.id); // V4：查看学习卡片 = 一次真实接触
   const confusableHTML = (v.confusable && v.confusable.length > 0) ? `
     <div class="word-confusable">
       <div class="word-confusable-label">⚠️ 易混淆</div>
@@ -10630,7 +11116,7 @@ function renderVocabLearn(app) {
         <div class="word-cn">${v.chinese}</div>
         <div class="word-work-meaning">${v.work_meaning || ''}</div>
 
-        <div class="word-example">${v.example_en || ''}</div>
+        <div class="word-example">${_glossify(v.example_en || '')}</div>
         <div class="word-example-cn">${v.example_cn || ''}</div>
 
         ${collocationsHTML}
@@ -10676,18 +11162,61 @@ function nextVocabLearn() {
 // ---------------------------------------------------------------------------
 
 /**
+ * V4：会话开始时把目标词的 mastery 记录预载进 _masteryCache，
+ * 使 _canGenerateQuiz（同步）能做"en2cn 仅首触词可用"的判定。
+ */
+async function _preloadMasteryCache(words) {
+  for (const v of words) {
+    if (_masteryCache.has(v.id)) continue;
+    try {
+      const m = await dbGet(STORES.masteryRecords, v.id);
+      if (m) _masteryCache.set(v.id, m);
+    } catch (e) { /* 无记录即新词，跳过 */ }
+  }
+}
+
+/**
+ * V4：学习卡片查看等非答题接触，记一次 exposure（异步、静默失败）。
+ */
+async function _noteExposureAsync(vocabId) {
+  try {
+    let m = _masteryCache.get(vocabId);
+    if (!m) {
+      try { m = await dbGet(STORES.masteryRecords, vocabId); } catch (e) { m = null; }
+      if (!m) m = WEC_Algo.initMastery(vocabId);
+    }
+    m = WEC_Algo.noteExposure(m);
+    // 查看接触可能让状态从 New 进入 Learning，但不影响排期
+    if (m.mastery_state === 'New') m.mastery_state = 'Learning';
+    _masteryCache.set(vocabId, m);
+    await dbPut(STORES.masteryRecords, m);
+  } catch (e) { /* non-critical */ }
+}
+
+/**
+ * V4：点词释义包装（gloss.js 提供 Gloss.glossify；未加载时原样返回）。
+ */
+function _glossify(text) {
+  if (typeof Gloss !== 'undefined' && Gloss.glossify) return Gloss.glossify(text);
+  return String(text == null ? '' : text);
+}
+
+/**
  * Build the quiz queue: one quiz item per target word, type chosen randomly.
  */
 function buildQuizQueue(words) {
   vocabSession.quizQueue = [];
   vocabSession.quizIdx = 0;
 
-  const types = ['en2cn', 'cn2en', 'fillblank', 'firstletter', 'confusable', 'scenario'];
+  // V4：删除 scenario（无语境裸问"哪个词适合此场景"，违背语境学习原则）
+  // 新增 contextchoice（完整例句 + 中文句意支撑的语境选词）
+  // 顺序即优先级倾向：主动回忆类在前，识别类(en2cn)仅首触词可用（见 _canGenerateQuiz）
+  const types = ['cn2en', 'fillblank', 'contextchoice', 'firstletter', 'confusable', 'en2cn'];
 
   for (const v of words) {
     // Filter types that are feasible for this word
     let feasible = types.filter(t => _canGenerateQuiz(t, v));
-    if (feasible.length === 0) feasible = ['en2cn']; // fallback
+    if (feasible.length === 0) feasible = ['cn2en']; // fallback：主动回忆保底
 
     // Pick a random feasible type
     const qType = feasible[Math.floor(Math.random() * feasible.length)];
@@ -10705,18 +11234,31 @@ function buildQuizQueue(words) {
 
 function _canGenerateQuiz(type, v) {
   switch (type) {
-    case 'en2cn':
-      return !!v.word && !!v.chinese;
+    case 'en2cn': {
+      // V4：看词选义（再认）只能做初筛 —— 仅首触词可用
+      // 首触 = 接触 <= 1 次 或 从未作答过；之后必须主动回忆
+      if (!v.word || !v.chinese) return false;
+      const m = _masteryCache.get(v.id);
+      const exposures = m ? (m.exposure_count || 0) : 0;
+      const reviews = m ? (m.review_count || 0) : 0;
+      return exposures <= 1 || reviews === 0;
+    }
     case 'cn2en':
       return !!v.word && !!v.chinese;
     case 'fillblank':
       return !!v.example_en && v.example_en.length > 10;
+    case 'contextchoice': {
+      // 需要例句中确实出现该词（才能挖空）
+      if (!v.example_en || v.example_en.length <= 10) return false;
+      const wordRegex = new RegExp('\\b' + _escapeRegex(v.word) + '\\b', 'i');
+      if (wordRegex.test(v.example_en)) return true;
+      const lemmaRegex = new RegExp('\\b' + _escapeRegex(v.lemma || v.word) + '\\b', 'i');
+      return lemmaRegex.test(v.example_en);
+    }
     case 'firstletter':
       return !!v.word && v.word.length > 1;
     case 'confusable':
       return v.confusable && v.confusable.length >= 1;
-    case 'scenario':
-      return !!v.work_context;
     default:
       return false;
   }
@@ -10765,14 +11307,15 @@ function _generateQuiz(type, v) {
       return _genCn2En(v);
     case 'fillblank':
       return _genFillBlank(v);
+    case 'contextchoice':
+      return _genContextChoice(v);
     case 'firstletter':
       return _genFirstLetter(v);
     case 'confusable':
       return _genConfusable(v);
-    case 'scenario':
-      return _genScenario(v);
     default:
-      return null;
+      // 含旧数据中的 'scenario'：一律回退到语境选词/填空，绝不返回 null 崩溃
+      return _genContextChoice(v) || _genFillBlank(v) || _genCn2En(v);
   }
 }
 
@@ -10917,14 +11460,27 @@ function _genConfusable(v) {
   };
 }
 
-// --- f) Scenario matching (Transfer) ---
-function _genScenario(v) {
-  // Build a scenario question: "In the context of X, which word fits?"
-  const scenario = v.work_context || '日常工作';
-  const scenarioText = `工作场景：${scenario}。以下哪个词最适合此场景？`;
+// --- f) Context choice (Usage) — V4 新增，取代旧 scenario 题 ---
+// 与 fillblank 的区别：给出完整英文例句（挖空）+ 中文句意支撑，
+// 考"在理解语境的前提下选出最贴切的词"，是可理解输入(i+1)下的语境学习；
+// fillblank 则不提供中文，纯靠英文语境推断。
+function _genContextChoice(v) {
+  const sentence = v.example_en;
+  if (!sentence) return null;
+
+  // 挖空目标词（找不到则尝试 lemma，再找不到此题不可生成）
+  const wordRegex = new RegExp('\\b' + _escapeRegex(v.word) + '\\b', 'i');
+  let blankedSentence;
+  if (wordRegex.test(sentence)) {
+    blankedSentence = sentence.replace(wordRegex, '____');
+  } else {
+    const lemmaRegex = new RegExp('\\b' + _escapeRegex(v.lemma || v.word) + '\\b', 'i');
+    if (!lemmaRegex.test(sentence)) return null;
+    blankedSentence = sentence.replace(lemmaRegex, '____');
+  }
 
   const distractors = _getDistractors(v, 'word', 3);
-  if (distractors.length < 3) return _genEn2Cn(v);
+  if (distractors.length < 3) return null;
 
   const options = _shuffleArray([
     { text: v.word, correct: true },
@@ -10933,13 +11489,14 @@ function _genScenario(v) {
   const correctIdx = options.findIndex(o => o.correct);
 
   return {
-    type: 'scenario',
+    type: 'contextchoice',
     quizType: 'choice',
-    dimension: 'transfer',
+    dimension: 'usage',
     vocabId: v.id,
     word: v.word,
-    question: scenarioText,
-    questionLabel: '场景匹配',
+    question: blankedSentence,
+    questionSub: v.example_cn || '',   // 中文句意支撑，渲染在题干下方
+    questionLabel: '语境选词 · 哪个词最符合句意',
     options: options.map(o => o.text),
     correctIdx: correctIdx,
     correctAnswer: v.word,
@@ -10969,6 +11526,7 @@ function renderVocabQuiz(app) {
   }
 
   const q = queue[idx];
+  q.shownAt = Date.now(); // V4：反应时计时起点（动态调度输入之一）
   let questionBody = '';
 
   if (q.quizType === 'choice') {
@@ -11006,7 +11564,8 @@ function renderVocabQuiz(app) {
 
       <div class="card">
         <div class="text-secondary text-sm">${q.questionLabel}</div>
-        <div style="font-size:18px; font-weight:600; padding:14px 0; line-height:1.6;">${q.question}</div>
+        <div style="font-size:18px; font-weight:600; padding:14px 0 4px; line-height:1.6;">${q.question}</div>
+        ${q.questionSub ? `<div class="text-secondary text-sm" style="padding:0 0 10px; line-height:1.5;">${q.questionSub}</div>` : ''}
         ${questionBody}
       </div>
 
@@ -11035,6 +11594,7 @@ function answerVocabChoice(selectedIdx) {
 
   const q = vocabSession.quizQueue[vocabSession.quizIdx];
   const isCorrect = selectedIdx === q.correctIdx;
+  const rt = q.shownAt ? (Date.now() - q.shownAt) : 0; // V4 反应时
 
   // Highlight options
   const optionContainer = document.getElementById('vocab-quiz-options');
@@ -11047,7 +11607,7 @@ function answerVocabChoice(selectedIdx) {
     });
   }
 
-  _showVocabFeedback(q, isCorrect, q.options[selectedIdx], null);
+  _showVocabFeedback(q, isCorrect, q.options[selectedIdx], null, rt);
 }
 
 function submitVocabInput() {
@@ -11057,6 +11617,7 @@ function submitVocabInput() {
   const q = vocabSession.quizQueue[vocabSession.quizIdx];
   const input = document.getElementById('vocab-quiz-input');
   const userInput = input ? input.value : '';
+  const rt = q.shownAt ? (Date.now() - q.shownAt) : 0; // V4 反应时
 
   const isCorrect = _checkInputAnswer(userInput, q);
 
@@ -11065,7 +11626,7 @@ function submitVocabInput() {
   const submitBtn = input ? input.nextElementSibling : null;
   if (submitBtn) submitBtn.disabled = true;
 
-  _showVocabFeedback(q, isCorrect, userInput, null);
+  _showVocabFeedback(q, isCorrect, userInput, null, rt);
 }
 
 /**
@@ -11143,7 +11704,7 @@ function _levenshtein(a, b) {
 // 10. Feedback + Error Analysis Card
 // ---------------------------------------------------------------------------
 
-function _showVocabFeedback(q, isCorrect, userAnswer, hintUsed) {
+function _showVocabFeedback(q, isCorrect, userAnswer, hintUsed, responseTime) {
   const feedback = document.getElementById('vocab-quiz-feedback');
   if (!feedback) return;
 
@@ -11157,12 +11718,13 @@ function _showVocabFeedback(q, isCorrect, userAnswer, hintUsed) {
     userAnswer: userAnswer,
     correctAnswer: q.correctAnswer,
     hintUsed: !!hintUsed,
+    responseTime: responseTime || 0,
     timestamp: Date.now()
   };
   vocabSession.results.push(result);
 
   // Update mastery and record error if wrong
-  updateVocabMastery(q, isCorrect, hintUsed);
+  updateVocabMastery(q, isCorrect, hintUsed, responseTime || 0);
   if (!isCorrect || hintUsed) {
     recordVocabError(q, userAnswer, isCorrect, hintUsed);
   }
@@ -11185,12 +11747,12 @@ function _showVocabFeedback(q, isCorrect, userAnswer, hintUsed) {
       explanation = `「${v.chinese}」对应的英文是「${v.word}」，不是「${userDisplay}」。请回忆这个词的拼写。`;
     } else if (q.type === 'fillblank') {
       explanation = `在例句中应该填入「${v.word}」。该词在此语境下表示「${v.work_meaning || v.chinese}」。`;
+    } else if (q.type === 'contextchoice') {
+      explanation = `结合句意「${v.example_cn || v.chinese}」，空格处应填「${v.word}」。该词在此语境下表示「${v.work_meaning || v.chinese}」。`;
     } else if (q.type === 'firstletter') {
       explanation = `正确的拼写是「${v.word}」。${v.word.length} 个字母，首字母 ${v.word.charAt(0).toUpperCase()}。`;
     } else if (q.type === 'confusable') {
       explanation = `「${v.word}」表示「${v.work_meaning || v.chinese}」。${v.confusable ? v.confusable.map(c => `「${c.word}」${c.diff}`).join('；') : ''}`;
-    } else if (q.type === 'scenario') {
-      explanation = `在「${v.work_context}」场景中，最合适的词是「${v.word}」。${v.work_meaning || ''}`;
     } else {
       explanation = `正确答案是「${q.correctAnswer}」。`;
     }
@@ -11212,11 +11774,11 @@ function _showVocabFeedback(q, isCorrect, userAnswer, hintUsed) {
     <div class="ea-value">${v.related_expression}</div>
   ` : '';
 
-  // Work example
+  // Work example（V4：例句支持点词查义）
   const exampleSection = v.example_en ? `
     <div class="ea-label">工作例句</div>
     <div class="ea-value">
-      <div>${v.example_en}</div>
+      <div>${_glossify(v.example_en)}</div>
       <div class="text-light text-xs mt-sm">${v.example_cn || ''}</div>
     </div>
   ` : '';
@@ -11311,8 +11873,8 @@ async function recordVocabError(q, userAnswer, isCorrect, hintUsed) {
       explanation = `首字母填空正确答案「${v.word}」。用户输入了「${userAnswer}」。`;
     } else if (q.type === 'confusable') {
       explanation = `易混词辨析：正确答案「${v.word}」(${v.chinese})。用户选择了「${userAnswer}」。${v.confusable ? v.confusable.map(c => c.word + ': ' + c.diff).join('; ') : ''}`;
-    } else if (q.type === 'scenario') {
-      explanation = `场景匹配正确答案「${v.word}」。用户选择了「${userAnswer}」。`;
+    } else if (q.type === 'contextchoice') {
+      explanation = `语境选词正确答案「${v.word}」（${v.work_meaning || v.chinese}）。用户选择了「${userAnswer}」。`;
     }
 
     // Determine error tag
@@ -11320,7 +11882,7 @@ async function recordVocabError(q, userAnswer, isCorrect, hintUsed) {
     if (q.type === 'firstletter') errorTag = 'spelling';
     else if (q.type === 'confusable') errorTag = 'confusable';
     else if (q.type === 'fillblank') errorTag = 'usage';
-    else if (q.type === 'scenario') errorTag = 'transfer';
+    else if (q.type === 'contextchoice') errorTag = 'usage';
     else if (q.type === 'en2cn') errorTag = 'recognition';
     else if (q.type === 'cn2en') errorTag = 'recall';
 
@@ -11381,7 +11943,7 @@ async function recordVocabError(q, userAnswer, isCorrect, hintUsed) {
 // 12. Mastery Update
 // ---------------------------------------------------------------------------
 
-async function updateVocabMastery(q, isCorrect, hintUsed) {
+async function updateVocabMastery(q, isCorrect, hintUsed, responseTime) {
   try {
     const v = q.item || VOCAB_ITEMS.find(item => item.id === q.vocabId);
     if (!v) return;
@@ -11409,54 +11971,20 @@ async function updateVocabMastery(q, isCorrect, hintUsed) {
       rating = 'again';
     }
 
-    // Update mastery using WEC_Algo
+    // Update mastery using WEC_Algo（V4：传真实反应时，驱动动态调度）
     mastery = WEC_Algo.updateMastery(mastery, rating, {
       dimension: q.dimension,
       hintUsed: !!hintUsed,
-      responseTime: 0
+      responseTime: responseTime || 0
     });
 
-    // Additional mastery advancement rules:
-    // - "不确定" (unsure in precheck) doesn't count as mastered
-    // - High work_relevance (5) needs transfer dimension
-    // - Need both recall + usage stable (score >= 80) for normal words
+    // 掌握判定完全由 WEC_Algo.computeMasteryState 负责
+    // （接触次数 + 近5次回忆成功率 + 时间沉淀，见 algorithm.js）
+    // 仅保留一条业务约束：预习时标"不确定"的词不允许直接判 Mastered
     if (vocabSession && vocabSession.precheckResults[v.id] === 'unsure') {
-      // Force mastery_state to at most "Reviewing" if was marked unsure
       if (mastery.mastery_state === 'Mastered') {
         mastery.mastery_state = 'Reviewing';
       }
-    }
-
-    // High work_relevance words need transfer dimension to be Mastered
-    if (v.work_relevance === 5 && mastery.mastery_state === 'Mastered') {
-      if (mastery.transfer_score < 80 || mastery.transfer_evidence_count < 2) {
-        mastery.mastery_state = 'Reviewing';
-      }
-    }
-
-    // Check if can advance to Mastered: need recall + usage >= 80
-    if (mastery.mastery_state !== 'Mastered') {
-      const recallStable = mastery.recall_score >= 80 && mastery.recall_evidence_count >= 2;
-      const usageStable = mastery.usage_score >= 80 && mastery.usage_evidence_count >= 2;
-      if (recallStable && usageStable) {
-        if (v.work_relevance === 5) {
-          // High relevance also needs transfer
-          if (mastery.transfer_score >= 80 && mastery.transfer_evidence_count >= 2) {
-            mastery.mastery_state = 'Mastered';
-          }
-        } else {
-          mastery.mastery_state = 'Mastered';
-        }
-      }
-    }
-
-    // If wrong: decrease score, schedule sooner review
-    if (!isCorrect) {
-      const scoreKey = `${q.dimension}_score`;
-      mastery[scoreKey] = Math.max(0, mastery[scoreKey] - 10);
-      // Schedule sooner review
-      mastery.next_review_at = Date.now() + 86400000; // 1 day
-      mastery.interval_days = Math.min(mastery.interval_days, 1);
     }
 
     // Cache and save
