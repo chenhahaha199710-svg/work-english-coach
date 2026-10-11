@@ -673,6 +673,22 @@ body.no-nav .conv-input-bar { z-index: 300; }
   cursor: default;
   opacity: 0.85;
 }
+.comprehension-option.answered {
+  cursor: default;
+  opacity: 0.85;
+}
+.comprehension-option.answered:hover {
+  border-color: var(--color-border);
+  background: var(--color-bg-card);
+}
+.comprehension-option.answered.correct:hover {
+  border-color: var(--color-mint);
+  background: rgba(77, 208, 168, 0.12);
+}
+.comprehension-option.answered.incorrect:hover {
+  border-color: var(--color-coral);
+  background: rgba(255, 122, 107, 0.12);
+}
 .option-letter {
   display: inline-flex;
   align-items: center;
@@ -1996,7 +2012,34 @@ window.WEC_Algo = {
     'thanks': '谢谢', 'thank': '谢谢', 'ok': '好的', 'etc': '等等'
   };
 
-  // --- 工具 ---
+  // --- 理解题选项/题干里的常见实词（词库未覆盖时兜底，避免"暂未收录"） ---
+  const QUESTION_WORDS = {
+    'ignore': '忽视；不理会', 'issue': '问题；事项', 'postpone': '推迟', 'indefinitely': '无限期地',
+    'reassign': '重新分配；转交', 'assign': '分配；指派', 'assigned': '已分配（assign 的过去式）',
+    'complaint': '投诉', 'delayed': '延期的；被延误的', 'delay': '延迟',
+    'request': '请求；申请', 'additional': '额外的；追加的', 'resources': '资源',
+    'summary': '总结；摘要', 'quarter': '季度', 'results': '结果；业绩',
+    'resolved': '已解决的', 'cancelled': '已取消的', 'canceled': '已取消的',
+    'twice': '两倍；两次', 'previous': '之前的', 'amount': '金额；数量',
+    'half': '一半', 'projected': '预计的', 'figure': '数字；数值', 'specific': '具体的',
+    'statement': '陈述；说法', 'according': '根据（according to）', 'topic': '主题；话题',
+    'mentioned': '提到的（mention 的过去式）', 'mention': '提到', 'explain': '解释',
+    'explained': '解释了（explain 的过去式）', 'listening': '听力；聆听',
+    'responsible': '负责的', 'following': '接下来的；跟进（follow up 跟进）',
+    'owner': '负责人；业主', 'maintenance': '维修；维护', 'repair': '修理',
+    'completed': '已完成（complete 的过去式）', 'complete': '完成',
+    'briefing': '简报；通气会', 'rollout': '上线；推广', 'excluded': '排除在外的',
+    'nighttime': '夜间（时段）', 'weekend': '周末', 'supplier': '供应商',
+    'baseline': '基准值；基线', 'target': '目标', 'reduce': '减少；降低',
+    'compared': '相比（compare 的过去式）', 'comparable': '可比的', 'criteria': '标准；口径',
+    'escalate': '升级处理', 'fallback': '兜底方案', 'workaround': '临时替代方案',
+    'approval': '批准；审批', 'authority': '权限', 'notification': '通知',
+    'temporary': '临时的', 'existing': '现有的', 'categories': '类别',
+    'response': '回复；响应', 'respond': '回复', 'proceed': '继续进行',
+    'timeline': '时间线；时间节点', 'topic of': '……的主题'
+  };
+
+
   function _esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -2063,6 +2106,7 @@ window.WEC_Algo = {
     }
     for (const cand of _lemmaCandidates(rawWord)) {
       if (FUNCTION_WORDS[cand]) return { chinese: FUNCTION_WORDS[cand], source: 'dict' };
+      if (QUESTION_WORDS[cand]) return { chinese: QUESTION_WORDS[cand], source: 'dict' };
     }
     return { chinese: '', source: 'none' };
   }
@@ -4633,61 +4677,75 @@ if (typeof DAILY_LESSONS !== 'undefined') {
     });
   }
 
+  // 选项洗牌：正确答案不再固定在第一项
+  function _shuffleOptions(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // 组装一道理解题。约定：correct 必须原样出现在 options 里（判定用 indexOf 精确匹配），
+  // explain 为中文解析，src 为原文依据句（用于答错解析定位与重听）
+  function _mkQuestion(qText, correct, distractors, explain, src) {
+    const opts = _shuffleOptions([correct, ...distractors.filter(d => d && d !== correct).slice(0, 3)]);
+    return { q: qText, a: correct, options: opts, explain: explain, src: src };
+  }
+
   function generateQuestions(text, title) {
     const qs = [];
-    const lowerText = text.toLowerCase();
+    const sentences = (String(text || '').match(/[^.!?]+[.!?]+/g) || [String(text || '')])
+      .map(s => s.trim()).filter(s => s.length > 5);
+    if (!sentences.length) return qs;
+    const first = sentences[0];
+    const last = sentences[sentences.length - 1];
+    // 细节句：取中间一句，尽量与首句/尾句错开
+    const mid = sentences.length > 2 ? sentences[1] : last;
 
-    // 问题 1：主题/内容类
-    const firstSentence = text.split(/[.!?]/).filter(s => s.trim().length > 10)[0] || text;
-    qs.push({
-      q: `What is the main topic of "${title || 'this listening'}?`,
-      a: firstSentence.trim().substring(0, 80),
-      options: [
-        firstSentence.trim().substring(0, 60) + '.',
-        'A complaint about a delayed project.',
-        'A request for additional resources.',
-        'A summary of last quarter\'s results.'
-      ]
-    });
+    // 问题 1：主旨类——答案就是原文第一句（完整句子，不截断不加标点，保证与选项逐字一致）
+    qs.push(_mkQuestion(
+      `What is the main topic of "${title || 'this listening'}?`,
+      first,
+      ['A complaint about a delayed project.',
+       'A request for additional resources.',
+       'A summary of last quarter\'s results.'],
+      '主旨题看开头：听力第一句通常点明主题，原文第一句就是答案依据。其余选项（投诉延期 / 申请资源 / 季度总结）原文均未提及。',
+      first
+    ));
 
-    // 问题 2：状态/数字类（如果有数字或时间）
-    const hasNumber = /\d+/.test(text);
-    if (hasNumber) {
-      const numMatch = text.match(/(\d+(?:\.\d+)?\s*(?:percent|%|days?|hours?|weeks?|months?))/i);
-      qs.push({
-        q: 'Which number or timeline is mentioned?',
-        a: numMatch ? numMatch[0] : 'Approximately as mentioned',
-        options: numMatch ? [
-          numMatch[0],
-          'Twice the previous amount',
-          'Half of the projected figure',
-          'No specific number'
-        ] : ['Approximately as mentioned', 'Twice the previous amount', 'Half of the projected figure', 'No specific number']
-      });
-    } else {
-      qs.push({
-        q: 'What is the current situation?',
-        a: 'According to the report.',
-        options: [
-          'According to the report.',
-          'It has been fully resolved.',
-          'It has been cancelled.',
-          'No clear status given.'
-        ]
-      });
+    // 问题 2：数字/时间类（如果有）；否则细节类
+    const numMatch = String(text).match(/(\d+(?:\.\d+)?\s*(?:percent|%|days?|hours?|weeks?|months?))/i);
+    if (numMatch) {
+      const numSentence = sentences.find(s => s.indexOf(numMatch[0]) >= 0) || first;
+      qs.push(_mkQuestion(
+        'Which number or timeline is mentioned?',
+        numMatch[0],
+        ['Twice the previous amount', 'Half of the projected figure', 'No specific number'],
+        `原文明确提到的数字/时间是「${numMatch[0]}」。`,
+        numSentence
+      ));
+    } else if (sentences.length > 2) {
+      qs.push(_mkQuestion(
+        'Which statement is true according to the listening?',
+        mid,
+        ['It has been fully resolved.', 'It has been cancelled.', 'No clear information was given.'],
+        '细节题：答案句在原文中明确出现；其余选项（已彻底解决 / 已取消 / 没有明确信息）与原文不符。',
+        mid
+      ));
     }
 
-    // 问题 3：下一步/原因类
-    qs.push({
-      q: 'What is the next step or key reason?',
-      a: 'As explained in the listening.',
-      options: [
-        'As explained in the listening.',
-        'To postpone indefinitely.',
-        'To reassign to another team.',
-        'To ignore the issue.'
-      ]
-    });
+    // 问题 3：下一步/结尾类——答案取原文最后一句（与首句不同时才出，避免重复）
+    if (last !== first) {
+      qs.push(_mkQuestion(
+        'What is the next step or key reason?',
+        last,
+        ['To postpone indefinitely.', 'To reassign to another team.', 'To ignore the issue.'],
+        '这类问题的答案通常藏在结尾，原文最后一句就是依据。其余选项（无限期推迟 / 转交别的团队 / 置之不理）原文均未提及。',
+        last
+      ));
+    }
 
     return qs;
   }
@@ -4699,7 +4757,12 @@ if (typeof DAILY_LESSONS !== 'undefined') {
     if (!lst.keywords) {
       lst.keywords = extractKeywords(lst.text);
     }
-    if (!lst.comprehension_questions) {
+    // 无理解题 → 自动生成；占位题（options 就是 A/B/C/D，答案是摆设）→ 重新生成
+    const _isPlaceholder = Array.isArray(lst.comprehension_questions)
+      && lst.comprehension_questions.length > 0
+      && lst.comprehension_questions.every(qq => qq && Array.isArray(qq.options)
+        && qq.options.join(',') === 'A,B,C,D');
+    if (!lst.comprehension_questions || _isPlaceholder) {
       lst.comprehension_questions = generateQuestions(lst.text, lst.title);
     }
     if (!lst.mode) {
@@ -8031,7 +8094,7 @@ function renderListeningPhase(app) {
         </div>
 
         <div class="card">
-          <div style="font-size: 18px; font-weight: 600; line-height: 1.6;">${q.q}</div>
+          <div id="comprehension-stem" style="font-size: 18px; font-weight: 600; line-height: 1.6;">${q.q}</div>
         </div>
 
         <div class="card">
@@ -8184,45 +8247,90 @@ function notUnderstood() {
   playListeningSlow();
 }
 
+// V4.1：定位正确答案下标。历史数据里 q.a 与选项文本不完全一致
+// （结尾标点、截断长度、手写简写等），indexOf 失败会返回 -1 导致"选对也判错"。
+// 三级兜底：精确匹配 → 归一化（大小写/标点/空白）匹配 → 词重叠度最高的选项
+function _resolveCorrectIdx(q) {
+  const opts = (q && q.options) || [];
+  let idx = opts.indexOf(q.a);
+  if (idx >= 0) return idx;
+  const norm = s => String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const na = norm(q.a);
+  idx = opts.findIndex(o => {
+    const no = norm(o);
+    return no && na && (no === na || no.startsWith(na) || na.startsWith(no));
+  });
+  if (idx >= 0) return idx;
+  // 词重叠兜底（应对手写题中"答案是选项的完整版"的情况）。
+  // 注意：数字是关键区分信息（6 hours vs 3 hours），不能过滤；词尾 s 做词干化
+  const stem = w => (w.length > 3 && !/\d/.test(w)) ? w.replace(/s$/, '') : w;
+  const toks = s => norm(s).split(' ').filter(w => w.length > 1 || /\d/.test(w)).map(stem);
+  const aWords = toks(q.a);
+  let best = -1, bestScore = 0;
+  opts.forEach((o, i) => {
+    const oWords = new Set(toks(o));
+    let score = 0;
+    for (const w of aWords) if (oWords.has(w)) score++;
+    if (score > bestScore) { bestScore = score; best = i; }
+  });
+  return best >= 0 ? best : 0;
+}
+
 function answerComprehension(optionIdx) {
   const studyDay = getStudyDay(appSettings);
   const lesson = DAILY_LESSONS.find(l => l.day === studyDay) || DAILY_LESSONS[0];
   const questions = lesson.listening.comprehension_questions || [];
   const q = questions[listeningState.questionsAnswered];
-  const correctIdx = q.options.indexOf(q.a);
+  if (!q) return;
+  // 选项答题后不再 disabled（要点词释义），靠此守卫防止连点重复作答
+  if (q._answered) return;
+  q._answered = true;
+
+  const correctIdx = _resolveCorrectIdx(q);
 
   const isCorrect = optionIdx === correctIdx;
   listeningState.questionsAnswered++;
   if (isCorrect) listeningState.questionsCorrect++;
   listeningState.comprehensionResults.push({ question: q.q, answer: q.options[optionIdx], correct: q.a, isCorrect });
 
-  // 显示所有选项的对错
+  const canGloss = (typeof Gloss !== 'undefined' && Gloss.glossify);
+
+  // 显示所有选项的对错；同时把选项文本换成可点词释义版本
+  // （答题前故意不接点词——泄答案；答题后开放，方便查错选项里的生词）
   q.options.forEach((opt, i) => {
     const el = document.getElementById('opt-' + i);
     if (!el) return;
-    el.disabled = true;
+    el.classList.add('answered');
+    el.removeAttribute('onclick');
     if (i === correctIdx) {
       el.classList.add('correct');
     } else if (i === optionIdx) {
       el.classList.add('incorrect');
     }
+    if (canGloss) {
+      const textEl = el.querySelector('.option-text');
+      if (textEl) textEl.innerHTML = Gloss.glossify(opt);
+    }
   });
 
-  // V4：答错给解析——定位原文依据句 + 点词释义 + 可重听
-  let explainHTML = '';
-  if (!isCorrect) {
-    const srcSentence = _findSourceSentence(lesson.listening.text || '', q.a);
-    listeningState.lastExplainSentence = srcSentence;
-    const glossSentence = (typeof Gloss !== 'undefined' && Gloss.glossify)
-      ? Gloss.glossify(srcSentence) : srcSentence;
-    explainHTML = `
-      <div class="mt-md" style="padding:10px 12px; background: var(--color-bg-subtle); border-radius: 10px;">
-        <div class="text-light text-xs mb-sm">📍 答案出自原文这句：</div>
-        <div style="font-size:15px; line-height:1.7;">${glossSentence}</div>
-        <button class="btn btn-ghost btn-sm mt-sm" onclick="replayExplainSentence()">🔊 重听这句</button>
-      </div>
-    `;
+  // 题干也开放点词（答题后不再泄答案）
+  if (canGloss) {
+    const stem = document.getElementById('comprehension-stem');
+    if (stem) stem.innerHTML = Gloss.glossify(q.q);
   }
+
+  // V4.1：解析 = 中文讲解（有则显示）+ 原文依据句（点词+重听），答对答错都给
+  const srcSentence = q.src || _findSourceSentence(lesson.listening.text || '', q.a);
+  listeningState.lastExplainSentence = srcSentence;
+  const glossSentence = canGloss ? Gloss.glossify(srcSentence) : srcSentence;
+  const explainHTML = `
+    ${q.explain ? `<div class="text-secondary text-sm mt-md" style="line-height: 1.7;">💡 ${q.explain}</div>` : ''}
+    <div class="mt-md" style="padding:10px 12px; background: var(--color-bg-subtle); border-radius: 10px;">
+      <div class="text-light text-xs mb-sm">📍 答案出自原文这句（点击单词可查释义）：</div>
+      <div style="font-size:15px; line-height:1.7;">${glossSentence}</div>
+      <button class="btn btn-ghost btn-sm mt-sm" onclick="replayExplainSentence()">🔊 重听这句</button>
+    </div>
+  `;
 
   // 显示反馈
   const fb = document.getElementById('comprehension-feedback');
@@ -8232,7 +8340,7 @@ function answerComprehension(optionIdx) {
       <div class="${isCorrect ? 'text-mint' : 'text-coral'}" style="font-weight: 600;">
         ${isCorrect ? '✓ 正确！' : '✗ 不正确'}
       </div>
-      <div class="text-secondary text-sm mt-sm">正确答案：${q.a}</div>
+      <div class="text-secondary text-sm mt-sm">正确答案：${canGloss ? Gloss.glossify(q.a) : q.a}</div>
       ${explainHTML}
     `;
     fb.style.display = 'block';
