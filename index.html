@@ -1024,11 +1024,12 @@ body:has(#wec-fallback-banner) { padding-top: 36px; }
 // 包含内存降级模式：IndexedDB 不可用时自动切换到内存 Map，保证应用可用
 
 const DB_NAME = 'WorkEnglishCoachDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 const STORES = {
   knowledgeItems: 'knowledgeItems',       // 知识库条目
   learningAttempts: 'learningAttempts',   // 学习尝试记录
+  kv: 'kv',                              // V4.2：通用键值（设置备份等，防 localStorage 被清）
   masteryRecords: 'masteryRecords',       // 四级掌握记录
   reviewSchedule: 'reviewSchedule',       // 复习排程
   errorBank: 'errorBank',                 // 错题库
@@ -1198,6 +1199,10 @@ function openDB() {
         const s = db.createObjectStore(STORES.assessments, { keyPath: 'id', autoIncrement: true });
         s.createIndex('type', 'assessment_type', { unique: false });
         s.createIndex('date', 'date', { unique: false });
+      }
+      // V4.2: 通用键值存储（wec_settings 备份等）
+      if (!db.objectStoreNames.contains(STORES.kv)) {
+        db.createObjectStore(STORES.kv, { keyPath: 'key' });
       }
     };
     } catch (openErr) {
@@ -1497,6 +1502,14 @@ function loadSettings() {
 
 function saveSettings(settings) {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  // V4.2：同步备份到 IndexedDB——localStorage 被浏览器清理后可从备份恢复进度
+  // （fire-and-forget，失败不影响主流程；降级模式下写入内存 Map 同样无害）
+  try {
+    if (typeof dbPut === 'function' && typeof STORES !== 'undefined') {
+      Promise.resolve(dbPut(STORES.kv, { key: SETTINGS_KEY, value: settings, updated_at: new Date().toISOString() }))
+        .catch(() => {});
+    }
+  } catch (e) {}
 }
 
 function updateSettings(patch) {
@@ -7630,8 +7643,22 @@ async function _initSkillScores() {
 async function initApp() {
   appSettings = loadSettings();
   if (!appSettings.studyStartDate) {
-    appSettings.studyStartDate = todayStr();
-    try { saveSettings(appSettings); } catch (e) { console.warn('saveSettings failed', e); }
+    // V4.2：localStorage 可能被浏览器清理（表现为"学过却回到 Day 1"），
+    // 先尝试从 IndexedDB 备份恢复设置，恢复不了再当作全新开始
+    let restored = false;
+    try {
+      const backup = await dbGet(STORES.kv, SETTINGS_KEY);
+      if (backup && backup.value && backup.value.studyStartDate) {
+        appSettings = { ...DEFAULT_SETTINGS, ...backup.value };
+        saveSettings(appSettings);
+        restored = true;
+        setTimeout(() => { try { showToast('已恢复你的学习进度（浏览器清理了本地数据）'); } catch (e) {} }, 800);
+      }
+    } catch (e) { /* DB 不可用则按全新用户处理 */ }
+    if (!restored) {
+      appSettings.studyStartDate = todayStr();
+      try { saveSettings(appSettings); } catch (e) { console.warn('saveSettings failed', e); }
+    }
   }
   appState = loadState();
 
@@ -10700,6 +10727,16 @@ function renderSettingsPage(app) {
         <div class="flex justify-between mb-sm"><span class="text-sm">当前天数</span><span class="text-sm">Day ${getStudyDay(appSettings)}</span></div>
         <div class="flex justify-between mb-sm"><span class="text-sm">连续学习</span><span class="text-sm">${appSettings.streakDays || 0} 天</span></div>
         <div class="flex justify-between"><span class="text-sm">累计学习</span><span class="text-sm">${appSettings.totalStudyMinutes || 0} 分钟</span></div>
+        <div class="mt-md" style="border-top: 1px solid var(--color-border); padding-top: 12px;">
+          <div class="text-light text-xs mb-sm">天数不对？比如浏览器清理数据后回到了 Day 1，可手动校正：</div>
+          <div class="flex gap-sm items-center">
+            <span class="text-sm" style="white-space: nowrap;">我实际学到第</span>
+            <input id="adjust-day-input" type="number" min="1" max="168" placeholder="${getStudyDay(appSettings)}"
+              style="width: 70px; padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 8px; text-align: center;">
+            <span class="text-sm" style="white-space: nowrap;">天</span>
+            <button class="btn btn-outline btn-sm flex-1" onclick="adjustStudyDay()">校正</button>
+          </div>
+        </div>
       </div>
 
       <div class="card" style="background: var(--color-bg-subtle);">
@@ -10724,6 +10761,24 @@ function updateSetting(key, value) {
   if (key === 'dailyMinutes') document.getElementById('set-minutes-val').textContent = value + ' min';
   if (key === 'dailyNewItems') document.getElementById('set-newitems-val').textContent = value + ' 个';
   if (key === 'speechRate') document.getElementById('set-rate-val').textContent = value.toFixed(1) + 'x';
+}
+
+// V4.2：手动校正学习天数（浏览器清理数据、换设备等导致天数错误时自救）
+// 原理：当前 Day = 今天 - studyStartDate + 1，把开始日期往前推 N-1 天即可
+function adjustStudyDay() {
+  const el = document.getElementById('adjust-day-input');
+  const n = parseInt(el && el.value, 10);
+  if (!n || n < 1 || n > 168) {
+    showToast('请输入 1-168 之间的天数');
+    return;
+  }
+  const d = new Date();
+  d.setDate(d.getDate() - (n - 1));
+  const ymd = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  updateSettings({ studyStartDate: ymd });
+  appSettings = loadSettings();
+  showToast(`已校正为 Day ${n}`);
+  renderSettingsPage(document.getElementById('app'));
 }
 
 // ===== Bottom Nav Setup =====
@@ -11328,7 +11383,13 @@ function buildQuizQueue(words) {
 
     // Pick a random feasible type
     const qType = feasible[Math.floor(Math.random() * feasible.length)];
-    const quizItem = _generateQuiz(qType, v);
+    // V4.2：生成失败（如例句挖不出目标词）时按优先级依次尝试其他题型，保底 cn2en
+    const tryOrder = [qType, ...feasible.filter(t => t !== qType), 'cn2en'];
+    let quizItem = null;
+    for (const t of tryOrder) {
+      quizItem = _generateQuiz(t, v);
+      if (quizItem) break;
+    }
     if (quizItem) vocabSession.quizQueue.push(quizItem);
   }
 
@@ -11354,14 +11415,13 @@ function _canGenerateQuiz(type, v) {
     case 'cn2en':
       return !!v.word && !!v.chinese;
     case 'fillblank':
-      return !!v.example_en && v.example_en.length > 10;
+      // V4.2：与生成逻辑同一判定——例句里能挖出目标词（含词形变化）才可出填空题
+      return !!v.example_en && v.example_en.length > 10
+        && _blankOutTarget(v.example_en, v.word, v.lemma) !== null;
     case 'contextchoice': {
       // 需要例句中确实出现该词（才能挖空）
-      if (!v.example_en || v.example_en.length <= 10) return false;
-      const wordRegex = new RegExp('\\b' + _escapeRegex(v.word) + '\\b', 'i');
-      if (wordRegex.test(v.example_en)) return true;
-      const lemmaRegex = new RegExp('\\b' + _escapeRegex(v.lemma || v.word) + '\\b', 'i');
-      return lemmaRegex.test(v.example_en);
+      return !!v.example_en && v.example_en.length > 10
+        && _blankOutTarget(v.example_en, v.word, v.lemma) !== null;
     }
     case 'firstletter':
       return !!v.word && v.word.length > 1;
@@ -11482,20 +11542,32 @@ function _genCn2En(v) {
 }
 
 // --- c) Fill-in-blank (Usage) ---
+// V4.2：挖空必须命中目标词本身或其词形变化，否则返回 null（换题型）。
+// 旧兜底是挖掉句子最后一个词，会造出"空格与正确答案无关"的废题
+// （例：increase 的例句里是 increased，匹配失败后挖掉了 month）。
+function _blankOutTarget(sentence, word, lemma) {
+  const bases = [...new Set([word, lemma].filter(Boolean))];
+  for (const b of bases) {
+    const exact = new RegExp('\\b' + _escapeRegex(b) + '\\b', 'i');
+    if (exact.test(sentence)) return sentence.replace(exact, '____');
+  }
+  for (const b of bases) {
+    // 常见词形变化：increase→increased/increases, use→used, plan→plans
+    const inf = new RegExp('\\b' + _escapeRegex(b) + '(?:s|es|d|ed|ing)\\b', 'i');
+    if (inf.test(sentence)) return sentence.replace(inf, '____');
+    // y→i 变化：study→studied/studies, apply→applied
+    if (/y$/i.test(b) && b.length > 2) {
+      const yRe = new RegExp('\\b' + _escapeRegex(b.slice(0, -1)) + 'i(?:es|ed)\\b', 'i');
+      if (yRe.test(sentence)) return sentence.replace(yRe, '____');
+    }
+  }
+  return null;
+}
+
 function _genFillBlank(v) {
   const sentence = v.example_en;
-  // Build a case-insensitive regex to blank out the word
-  const wordRegex = new RegExp('\\b' + _escapeRegex(v.word) + '\\b', 'i');
-  let blankedSentence;
-  if (wordRegex.test(sentence)) {
-    blankedSentence = sentence.replace(wordRegex, '____');
-  } else {
-    // Try lemma
-    const lemmaRegex = new RegExp('\\b' + _escapeRegex(v.lemma || v.word) + '\\b', 'i');
-    blankedSentence = lemmaRegex.test(sentence)
-      ? sentence.replace(lemmaRegex, '____')
-      : sentence.replace(/\S+$/, '____');
-  }
+  const blankedSentence = _blankOutTarget(sentence, v.word, v.lemma);
+  if (!blankedSentence) return null; // 挖不出目标词：此题不可生成，换题型
 
   const distractors = _getDistractors(v, 'word', 3);
   if (distractors.length < 3) return _genEn2Cn(v);
@@ -11576,16 +11648,9 @@ function _genContextChoice(v) {
   const sentence = v.example_en;
   if (!sentence) return null;
 
-  // 挖空目标词（找不到则尝试 lemma，再找不到此题不可生成）
-  const wordRegex = new RegExp('\\b' + _escapeRegex(v.word) + '\\b', 'i');
-  let blankedSentence;
-  if (wordRegex.test(sentence)) {
-    blankedSentence = sentence.replace(wordRegex, '____');
-  } else {
-    const lemmaRegex = new RegExp('\\b' + _escapeRegex(v.lemma || v.word) + '\\b', 'i');
-    if (!lemmaRegex.test(sentence)) return null;
-    blankedSentence = sentence.replace(lemmaRegex, '____');
-  }
+  // 挖空目标词（含词形变化；挖不出则此题不可生成，换题型）
+  const blankedSentence = _blankOutTarget(sentence, v.word, v.lemma);
+  if (!blankedSentence) return null;
 
   const distractors = _getDistractors(v, 'word', 3);
   if (distractors.length < 3) return null;
