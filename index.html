@@ -2220,7 +2220,18 @@ const READING_DICT = {
   "october":"十月","compliance":"合规","exceptions":"例外；异常情况","standardize":"标准化","expanding":"扩展",
   "cities":"城市（复数）","sla":"服务等级协议","calculation":"计算","wednesday":"星期三","expected":"预期的；预计",
   "live":"上线；实时的；居住","september":"九月","th":"日期序数后缀","advanced":"高级的；先进的",
-  "exercise":"练习；锻炼","viewpoints":"观点"
+  "exercise":"练习；锻炼","viewpoints":"观点",
+  "remote":"远程的；遥远的；遥控器","technician":"技师；技术员","technicians":"技师；技术员（复数）",
+  "machine":"机器；设备","washing":"洗涤；清洗","washing-machine":"洗衣机","control":"控制；操控",
+  "panel":"面板；专家组","approve":"批准；同意","definite":"确定的；明确的","matrix":"矩阵；分工表",
+  "microphones":"麦克风（复数）","themselves":"他们/她们自己","everyone":"每个人；大家",
+  "air":"空气；空中","conditioner":"调节器；空调机（与 air 连用）","cooling":"制冷；冷却",
+  "stopped":"停止了；停下（stop 的过去式）","spoke":"讲话（speak 的过去式）","complain":"抱怨；投诉",
+  "eighth":"第八","happen":"发生","likely":"可能的；很可能","manufactured":"制造；生产（过去式/过去分词）",
+  "night":"夜晚","noisy":"嘈杂的；吵闹的","noon":"中午","power":"电力；电源；权力",
+  "session":"会议；一场；一段时间","unavailable":"无法使用的；没空的；无货的","well":"好地；良好；井",
+  "p.m.":"下午","a.m.":"上午","li":"李（姓氏）","na":"娜（名字）","chen":"陈（姓氏）",
+  "rui":"睿（名字）","mei":"梅（名字）","liu":"刘（姓氏）"
 };
 
 // ===== js/gloss.js =====
@@ -2395,7 +2406,7 @@ const READING_DICT = {
    */
   function glossify(text) {
     const safe = _esc(text);
-    return safe.replace(/&(?:amp|lt|gt|quot|#39);|[A-Za-z][A-Za-z'’-]*/g, (m) =>
+    return safe.replace(/&(?:amp|lt|gt|quot|#39);|[Aa]\.[Mm]\.|[Pp]\.[Mm]\.|[A-Za-z][A-Za-z'’-]*/g, (m) =>
       m.charAt(0) === '&'
         ? m
         : `<span class="gloss-word" data-w="${m}">${m}</span>`
