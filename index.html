@@ -891,6 +891,170 @@ body:has(#wec-fallback-banner) { padding-top: 36px; }
 .gloss-known-tag { font-size: 12px; color: var(--color-primary); margin-top: 6px; font-weight: 600; }
 .gloss-actions { display: flex; gap: 8px; margin-top: 12px; }
 
+
+/* ===== V5: 听读优先的学习首页与工作阅读 ===== */
+.v5-home { padding-top: 12px; }
+.v5-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.v5-brand { display: flex; align-items: center; gap: 9px; color: var(--color-primary-dark); font-size: 14px; font-weight: 700; letter-spacing: .01em; }
+.v5-brand-mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 10px 10px 10px 3px; color: #f8f4e9; background: var(--color-primary); font-family: Georgia, serif; font-size: 18px; }
+.v5-day-pill { border: 1px solid var(--color-border); border-radius: 999px; background: rgba(255,254,249,.72); color: var(--color-text-secondary); padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.v5-hero { position: relative; overflow: hidden; padding: 26px 24px 22px; border-radius: 26px 26px 26px 8px; color: #f9f6ed; background: linear-gradient(145deg, #173e34 0%, #1f5b4a 62%, #2c6e57 100%); box-shadow: 0 16px 36px rgba(23,52,44,.16); }
+.v5-hero::after { content: ""; position: absolute; width: 190px; height: 190px; right: -80px; top: -82px; border: 36px solid rgba(255,255,255,.055); border-radius: 50%; pointer-events: none; }
+.v5-hero-kicker { position: relative; z-index: 1; margin-bottom: 12px; color: #bdd7c8; font-size: 10px; font-weight: 700; letter-spacing: .18em; }
+.v5-hero h1 { position: relative; z-index: 1; font-size: 31px; line-height: 1.25; letter-spacing: -.03em; }
+.v5-hero p { position: relative; z-index: 1; max-width: 310px; margin-top: 12px; color: #d4e1d9; font-size: 13px; line-height: 1.75; }
+.v5-hero-cta { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 52px; margin-top: 22px; padding: 0 17px 0 19px; border: 0; border-radius: 15px; color: #173e34; background: #f6efdc; box-shadow: 0 5px 14px rgba(0,0,0,.12); font-size: 16px; font-weight: 700; cursor: pointer; }
+.v5-hero-cta:active { transform: translateY(1px); }
+.v5-cta-arrow { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: #fff; background: var(--color-primary); font-size: 19px; }
+.v5-hero-meta { position: relative; z-index: 1; margin-top: 12px; color: #b9cec1; font-size: 11px; line-height: 1.6; }
+.v5-metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin: 18px 0 24px; padding: 0 2px; }
+.v5-metrics > div { display: flex; flex-direction: column; align-items: center; gap: 1px; border-right: 1px solid var(--color-border); }
+.v5-metrics > div:last-child { border-right: 0; }
+.v5-metrics strong { color: var(--color-primary-dark); font-family: Georgia, serif; font-size: 24px; line-height: 1.3; }
+.v5-metrics span { color: var(--color-text-secondary); font-size: 10px; white-space: nowrap; }
+.v5-section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 2px 11px; }
+.v5-section-title h2 { font-size: 19px; }
+.v5-section-title span { color: var(--color-text-light); font-size: 10px; }
+.v5-path { display: grid; gap: 10px; }
+.v5-path-card { display: grid; grid-template-columns: 36px 1fr; gap: 12px; padding: 18px 16px; border: 1px solid rgba(222,223,215,.75); border-radius: 19px; background: var(--color-bg-card); box-shadow: var(--shadow-sm); }
+.v5-path-number { padding-top: 2px; color: #9bb4a6; font-family: Georgia, serif; font-size: 20px; font-style: italic; }
+.v5-path-label { margin-bottom: 4px; color: var(--color-primary-light); font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+.v5-path-copy h3 { overflow-wrap: anywhere; font-size: 16px; line-height: 1.45; }
+.v5-path-copy p { margin-top: 5px; color: var(--color-text-secondary); font-size: 12px; line-height: 1.65; }
+.v5-text-link { display: inline-flex; align-items: center; gap: 9px; margin-top: 11px; padding: 0; border: 0; color: var(--color-primary); background: transparent; font-size: 13px; font-weight: 700; cursor: pointer; }
+.v5-text-link span { font-size: 17px; }
+.v5-library-entry { display: grid; grid-template-columns: 40px 1fr 18px; align-items: center; gap: 12px; margin-top: 18px; padding: 17px 16px; border: 1px solid #d8e2d8; border-radius: 18px; background: #e8efe6; }
+.v5-library-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: var(--color-primary); background: rgba(255,255,255,.7); font-size: 22px; }
+.v5-library-copy { display: flex; flex-direction: column; min-width: 0; }
+.v5-library-copy strong { font-size: 14px; }
+.v5-library-copy span { margin-top: 3px; color: var(--color-text-secondary); font-size: 10px; line-height: 1.5; }
+.v5-optional { margin-top: 16px; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+.v5-optional summary { padding: 14px 2px; color: var(--color-text-secondary); font-size: 12px; cursor: pointer; }
+.v5-optional-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; padding: 0 0 14px; }
+.v5-optional-actions .btn { padding: 9px 5px; font-size: 12px; }
+.v5-gentle-note { margin: 18px 0 8px; color: var(--color-text-light); text-align: center; font-size: 11px; }
+
+/* 阅读与句子库 */
+.v5-page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 8px 0 18px; }
+.v5-page-head h1 { margin-top: 2px; font-size: 28px; }
+.v5-page-head p { margin-top: 4px; color: var(--color-text-secondary); font-size: 12px; }
+.v5-eyebrow { color: var(--color-primary-light); font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.v5-segmented { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 16px; padding: 4px; border-radius: 14px; background: #e8e7df; }
+.v5-segmented button { min-height: 38px; padding: 6px 4px; border: 0; border-radius: 11px; color: var(--color-text-secondary); background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; }
+.v5-segmented button.active { color: var(--color-primary-dark); background: var(--color-bg-card); box-shadow: 0 2px 8px rgba(23,52,44,.07); }
+.v5-daily-reading { padding: 22px 20px; border-radius: 22px 22px 22px 7px; color: #f8f5ec; background: var(--color-primary-dark); }
+.v5-daily-badge { color: #a9c9b7; font-size: 9px; font-weight: 700; letter-spacing: .13em; }
+.v5-daily-reading h2 { margin-top: 8px; font-size: 22px; }
+.v5-daily-reading p { margin: 5px 0 12px; color: #c9d9d0; font-size: 13px; line-height: 1.55; }
+.v5-reading-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.v5-reading-tags span { padding: 3px 8px; border: 1px solid rgba(255,255,255,.13); border-radius: 999px; color: #d7e4dc; background: rgba(255,255,255,.06); font-size: 10px; }
+.v5-daily-reading .btn-primary { color: var(--color-primary-dark); background: #f5efdf; }
+.v5-filter-row { display: flex; gap: 7px; overflow-x: auto; margin: 18px -16px 14px; padding: 0 16px 4px; scrollbar-width: none; }
+.v5-filter-row::-webkit-scrollbar { display: none; }
+.v5-filter-chip { flex: 0 0 auto; min-height: 34px; padding: 6px 12px; border: 1px solid var(--color-border); border-radius: 999px; color: var(--color-text-secondary); background: transparent; font-size: 11px; cursor: pointer; }
+.v5-filter-chip.active { border-color: var(--color-primary); color: #fff; background: var(--color-primary); }
+.v5-list-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 9px; }
+.v5-list-heading h3 { font-size: 15px; }
+.v5-list-heading span { color: var(--color-text-light); font-size: 11px; }
+.v5-article-list { overflow: hidden; margin-bottom: 10px; border: 1px solid var(--color-border-light); border-radius: 18px; background: var(--color-bg-card); }
+.v5-article-row { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 11px; min-height: 70px; padding: 12px 14px; border-bottom: 1px solid var(--color-border-light); cursor: pointer; }
+.v5-article-row:last-child { border-bottom: 0; }
+.v5-article-row:active { background: var(--color-mint-light); }
+.v5-article-day { color: #89a294; font-family: Georgia, serif; font-size: 14px; font-style: italic; }
+.v5-article-copy { display: flex; flex-direction: column; min-width: 0; }
+.v5-article-copy strong { overflow-wrap: anywhere; font-size: 14px; line-height: 1.45; }
+.v5-article-copy span { margin-top: 3px; color: var(--color-text-light); font-size: 10px; }
+.v5-read-done { padding: 3px 7px; border-radius: 999px; color: var(--color-primary); background: var(--color-mint-light); font-size: 10px; }
+.v5-row-arrow { color: var(--color-text-light); font-size: 24px; font-weight: 300; }
+.v5-sentence-intro { display: flex; flex-direction: column; gap: 4px; margin-bottom: 13px; }
+.v5-sentence-intro strong { font-size: 16px; }
+.v5-sentence-intro span { color: var(--color-text-secondary); font-size: 11px; }
+.v5-search-bar { display: flex; gap: 7px; margin-bottom: 14px; }
+.v5-search-bar input { flex: 1; min-width: 0; height: 43px; padding: 0 13px; border: 1px solid var(--color-border); border-radius: 12px; outline: none; color: var(--color-text); background: var(--color-bg-card); font-size: 14px; }
+.v5-search-bar input:focus { border-color: var(--color-primary-light); }
+.v5-search-bar button { padding: 0 15px; border: 0; border-radius: 12px; color: #fff; background: var(--color-primary); font-size: 13px; cursor: pointer; }
+.v5-sentence-list { display: grid; gap: 10px; margin-bottom: 12px; }
+.v5-sentence-card { padding: 17px 16px 12px; border: 1px solid var(--color-border-light); border-radius: 18px; background: var(--color-bg-card); }
+.v5-sentence-en { color: var(--color-text); font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.7; }
+.v5-sentence-cn { margin-top: 7px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.6; }
+.v5-sentence-example { margin-top: 10px; padding-top: 9px; border-top: 1px dashed var(--color-border); color: var(--color-text-secondary); font-size: 13px; line-height: 1.7; }
+.v5-sentence-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 9px; border-top: 1px solid var(--color-border-light); }
+.v5-sentence-foot > span { color: var(--color-text-light); font-size: 10px; }
+.v5-sentence-foot > div { display: flex; gap: 5px; }
+.v5-sentence-foot button { min-height: 30px; padding: 4px 8px; border: 0; border-radius: 8px; color: var(--color-primary); background: var(--color-mint-light); font-size: 11px; cursor: pointer; }
+.v5-empty { margin-top: 40px; }
+
+/* 阅读学习页 */
+.v5-reading-session { padding-top: 10px; }
+.v5-reading-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 6px; margin-bottom: 18px; }
+.v5-reading-nav > *:last-child { justify-self: end; }
+.v5-reading-nav > *:nth-child(2) { color: var(--color-text-secondary); font-size: 11px; text-align: center; }
+.v5-reading-nav button { padding: 6px 0; border: 0; color: var(--color-primary); background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; }
+.v5-reading-title { margin-bottom: 15px; }
+.v5-reading-title h1 { margin-top: 4px; font-size: 26px; line-height: 1.35; }
+.v5-reading-title p { margin-top: 5px; color: var(--color-text-secondary); font-size: 13px; }
+.v5-reading-toolbar { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+.v5-reading-toolbar button { min-height: 34px; padding: 5px 10px; border: 1px solid var(--color-border); border-radius: 10px; color: var(--color-primary); background: var(--color-bg-card); font-size: 11px; cursor: pointer; }
+.v5-reading-toolbar span { margin-left: auto; color: var(--color-text-light); font-size: 10px; white-space: nowrap; }
+.v5-reading-paper { overflow: hidden; margin-bottom: 14px; padding: 7px 15px; border: 1px solid var(--color-border-light); border-radius: 20px; background: var(--color-bg-card); box-shadow: var(--shadow-sm); }
+.v5-reading-line { display: grid; grid-template-columns: 23px 1fr auto; gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--color-border-light); }
+.v5-reading-line:last-child { border-bottom: 0; }
+.v5-line-no { padding-top: 5px; color: #a2b0a8; font-family: Georgia, serif; font-size: 10px; font-style: italic; }
+.v5-line-text { min-width: 0; color: #213b33; font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.8; overflow-wrap: anywhere; }
+.v5-line-actions { display: flex; flex-direction: column; gap: 5px; padding-top: 2px; }
+.v5-line-actions button { width: 29px; height: 29px; border: 0; border-radius: 9px; color: var(--color-primary); background: var(--color-mint-light); font-size: 12px; cursor: pointer; }
+.v5-reading-vocab { margin: 16px 0; padding: 16px; border-radius: 16px; background: #e9eee6; }
+.v5-reading-vocab h3 { margin-bottom: 9px; font-size: 13px; }
+.v5-reading-vocab > div { display: flex; flex-wrap: wrap; gap: 7px; }
+.v5-reading-vocab span { padding: 5px 8px; border-radius: 8px; color: var(--color-text-secondary); background: rgba(255,255,255,.72); font-size: 11px; }
+.v5-reading-vocab strong { color: var(--color-primary); }
+.v5-reading-hint { margin: 12px 4px 16px; color: var(--color-text-light); text-align: center; font-size: 11px; }
+.v5-quiz-progress { overflow: hidden; height: 4px; margin: -7px 0 22px; border-radius: 99px; background: var(--color-border-light); }
+.v5-quiz-progress > div { height: 100%; border-radius: inherit; background: var(--color-primary-light); transition: width .2s ease; }
+.v5-quiz-card { margin-bottom: 18px; padding: 22px 19px; border-radius: 20px; background: var(--color-primary-dark); color: #fff; }
+.v5-quiz-card .v5-eyebrow { color: #a8c8b7; }
+.v5-quiz-card h2 { margin-top: 9px; font-family: Georgia, "Times New Roman", serif; font-size: 20px; line-height: 1.55; }
+.v5-reading-options { display: grid; gap: 9px; }
+.v5-reading-option { display: grid; grid-template-columns: 30px 1fr; align-items: start; gap: 10px; width: 100%; min-height: 54px; padding: 13px 14px; border: 1px solid var(--color-border); border-radius: 15px; color: var(--color-text); background: var(--color-bg-card); text-align: left; cursor: pointer; }
+.v5-reading-option > span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: var(--color-text-secondary); background: var(--color-bg-subtle); font-size: 11px; font-weight: 700; }
+.v5-option-text { padding-top: 2px; font-size: 14px; line-height: 1.65; }
+.v5-reading-option.correct { border-color: var(--color-primary); background: var(--color-mint-light); }
+.v5-reading-option.correct > span { color: #fff; background: var(--color-primary); }
+.v5-reading-option.incorrect { border-color: var(--color-coral); background: #fff1ec; }
+.v5-reading-option.incorrect > span { color: #fff; background: var(--color-coral); }
+.v5-reading-option.answered { cursor: default; }
+.v5-reading-feedback-card { margin-top: 15px; padding: 18px 16px; border: 1px solid #cbded1; border-radius: 18px; background: #edf4ed; }
+.v5-reading-feedback-card.incorrect { border-color: #eed2c8; background: #fff3ee; }
+.v5-reading-feedback-card > strong { color: var(--color-primary); font-size: 16px; }
+.v5-reading-feedback-card.incorrect > strong { color: #b85f4b; }
+.v5-reading-feedback-card > p { margin-top: 9px; font-size: 13px; line-height: 1.7; }
+.v5-reading-feedback-card .v5-explain { padding: 10px 11px; border-radius: 10px; background: rgba(255,255,255,.7); }
+.v5-source-sentence { margin: 12px 0; padding: 12px; border-left: 3px solid var(--color-primary-light); border-radius: 0 10px 10px 0; background: rgba(255,255,255,.72); }
+.v5-source-sentence > span { color: var(--color-text-light); font-size: 10px; }
+.v5-source-sentence p { margin: 5px 0 8px; font-family: Georgia, serif; font-size: 14px; line-height: 1.7; }
+.v5-source-sentence button { padding: 5px 8px; border: 0; border-radius: 8px; color: var(--color-primary); background: var(--color-mint); font-size: 11px; cursor: pointer; }
+.v5-reading-done { padding: 54px 8px 24px; text-align: center; }
+.v5-done-mark { display: grid; place-items: center; width: 68px; height: 68px; margin: 0 auto 19px; border-radius: 50%; color: #fff; background: var(--color-primary); box-shadow: 0 0 0 10px var(--color-mint-light); font-size: 30px; }
+.v5-reading-done h1 { margin-top: 7px; font-size: 25px; }
+.v5-reading-done > p { margin-top: 7px; color: var(--color-text-secondary); font-size: 13px; }
+.v5-done-score { display: flex; flex-direction: column; align-items: center; margin: 25px 0; padding: 22px; border-radius: 20px; background: var(--color-bg-card); }
+.v5-done-score strong { color: var(--color-primary); font-family: Georgia, serif; font-size: 38px; }
+.v5-done-score span { color: var(--color-text-secondary); font-size: 12px; }
+.v5-done-actions { display: grid; grid-template-columns: 1fr 1.35fr; gap: 9px; }
+
+@media (max-width: 370px) {
+  .v5-home, .v5-reading-library, .v5-reading-session { padding-left: 12px; padding-right: 12px; }
+  .v5-hero { padding: 22px 19px 19px; }
+  .v5-hero h1 { font-size: 28px; }
+  .v5-path-card { grid-template-columns: 29px 1fr; gap: 8px; padding: 16px 13px; }
+  .v5-reading-toolbar { flex-wrap: wrap; }
+  .v5-reading-toolbar span { width: 100%; margin-left: 0; }
+  .v5-line-text { font-size: 16px; }
+}
+@media (min-width: 700px) {
+  .bottom-nav { max-width: 480px; left: 50%; right: auto; width: 480px; transform: translateX(-50%); border-right: 1px solid var(--color-border-light); border-left: 1px solid var(--color-border-light); }
+}
+
 </style>
 </head>
 <body>
@@ -903,23 +1067,23 @@ body:has(#wec-fallback-banner) { padding-top: 36px; }
   <nav class="bottom-nav">
     <button class="nav-item active" data-page="today">
       <div class="nav-icon" id="icon-today"></div>
-      <span>Today</span>
+      <span>今日</span>
     </button>
     <button class="nav-item" data-page="review">
       <div class="nav-icon" id="icon-review"></div>
-      <span>Review</span>
+      <span>复习</span>
     </button>
-    <button class="nav-item" data-page="practice">
-      <div class="nav-icon" id="icon-practice"></div>
-      <span>Practice</span>
+    <button class="nav-item" data-page="reading">
+      <div class="nav-icon" id="icon-reading"></div>
+      <span>阅读</span>
     </button>
     <button class="nav-item" data-page="progress">
       <div class="nav-icon" id="icon-progress"></div>
-      <span>Progress</span>
+      <span>进度</span>
     </button>
     <button class="nav-item" data-page="more">
       <div class="nav-icon" id="icon-more"></div>
-      <span>More</span>
+      <span>我的</span>
     </button>
   </nav>
 
@@ -927,7 +1091,7 @@ body:has(#wec-fallback-banner) { padding-top: 36px; }
     // Set icons
     document.getElementById('icon-today').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>';
     document.getElementById('icon-review').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v5h5"/></svg>';
-    document.getElementById('icon-practice').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
+    document.getElementById('icon-reading').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
     document.getElementById('icon-progress').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>';
     document.getElementById('icon-more').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>';
   </script>
@@ -1555,7 +1719,8 @@ function getStudyDay(settings) {
   start.setHours(0,0,0,0);
   const today = new Date(); today.setHours(0,0,0,0);
   const day = daysBetween(start, today) + 1;
-  return Math.max(1, Math.min(day, 168));
+  const courseDays = (typeof DAILY_LESSONS !== 'undefined' && DAILY_LESSONS.length) || 84;
+  return Math.max(1, Math.min(day, courseDays));
 }
 
 function getWeek(studyDay) {
@@ -1959,6 +2124,50 @@ window.WEC_Algo = {
   getNewItemsForToday
 };
 
+// ===== js/reading-dict.js =====
+// V5 阅读补全词典：覆盖交接包 76 篇短文中、原 544 词库未收录的词。
+// 仅作点词释义，不自动加入新词任务，避免瞬间增加学习负荷。
+const READING_DICT = {
+  "hi":"你好","let":"让；允许","quick":"快速的","sixty":"六十","done":"完成的","expect":"预期；期待",
+  "case":"情况；案例；工单","zhang":"张（姓氏）","wei":"伟（名字）","person":"人；个人","lead":"负责人；带领",
+  "monday":"星期一","nothing":"没有什么","changed":"已改变","approved":"已批准","fifteen":"十五","completion":"完成",
+  "eighty":"八十","five":"五","twelve":"十二","month":"月份","main":"主要的","clear":"清楚的；明确的",
+  "due":"到期的；预定的","cannot":"不能","original":"原来的；原始的","longer":"更长的；更久","based":"基于",
+  "three":"三","resolution":"解决方案；解决","dropped":"下降了","eight":"八","fewer":"更少的","seventy":"七十",
+  "two":"二","complex":"复杂的","cases":"情况；案例；工单（复数）","ordering":"订购；排序","special":"特殊的",
+  "exact":"确切的","faster":"更快的","delivery":"交付；配送","friday":"星期五","thursday":"星期四",
+  "communication":"沟通","getting":"获得；变得","keep":"保持；继续","walk":"走；逐步了解","seven":"七",
+  "terms":"条款；术语","fifty":"五十","ten":"十","replacement":"替换；替换件","pipe":"管道",
+  "rather":"相当；宁愿","places":"地点；放置","confirmation":"确认","city":"城市","operations":"运营；操作",
+  "residents":"居民","full":"完整的；满的","sop":"标准操作流程","twenty":"二十","four":"四","entire":"整个的",
+  "process":"流程；处理","everything":"一切","like":"喜欢；像","fully":"完全地","facing":"面临",
+  "lack":"缺乏","slower":"更慢的","dropping":"下降；掉落","chain":"链条；连锁","hundred":"一百",
+  "build":"构建；建立","calculated":"计算出的","consultation":"咨询","setting":"设置；环境","let's":"让我们",
+  "value":"价值；数值","august":"八月","aim":"目标；旨在","anchor":"锚点；使固定","backwards":"向后；反向",
+  "hard":"困难的；努力地","keeps":"保持；继续","break":"中断；打破","categorize":"分类","path":"路径",
+  "separate":"分开的；分离","contracts":"合同（复数）","improvement":"改进","gaps":"缺口；差距",
+  "allocation":"分配","asset":"资产","covered":"已覆盖","incurred":"产生的；招致的","direct":"直接的；直接",
+  "leads":"负责人；线索；带领","found":"发现；建立","layers":"层级（复数）","deep":"深的","dive":"深入探究",
+  "outliers":"异常值","basis":"基础；依据","background":"背景","project":"项目","migration":"迁移",
+  "groups":"群组；分组","accounts":"账户；说明","reauthorized":"重新授权","define":"定义","option":"选项",
+  "quo":"现状（用于 status quo）","manual":"手动的；手册","b":"选项 B","create":"创建","trade":"权衡；交易",
+  "temporarily":"暂时地","design":"设计","using":"使用","channel":"渠道；通道","doesn't":"不；没有",
+  "we'll":"我们将","fall":"下降；落下","bi":"商业智能（Business Intelligence）","assess":"评估",
+  "extraction":"提取","logic":"逻辑","change":"改变；变更","one":"一；一个","contract":"合同",
+  "maps":"映射；地图","explore":"探索","whether":"是否","platform":"平台","consistency":"一致性",
+  "transition":"过渡；迁移","capacity":"容量；产能","cluster":"集群；聚集","kept":"保留；保持",
+  "short":"短的；不足的","group":"组；群体","deprecated":"已弃用的","historical":"历史的；历史数据的",
+  "accessible":"可访问的；易理解的","skip":"跳过","retry":"重试","invalid":"无效的","pilot":"试点；试点的",
+  "rolling":"滚动的；逐步进行的","items":"项目；条目","another":"另一个","overburdened":"负担过重的",
+  "less":"更少的","underlying":"底层的；潜在的","yuan":"元（人民币单位）","without":"没有","applies":"适用；应用",
+  "product":"产品","ac":"空调（Air Conditioner）","fridge":"冰箱","washer":"洗衣机","second":"第二；秒",
+  "regional":"区域的","roll":"推出；滚动","earliest":"最早的","ship":"发货；运送","feature":"功能；特点",
+  "october":"十月","compliance":"合规","exceptions":"例外；异常情况","standardize":"标准化","expanding":"扩展",
+  "cities":"城市（复数）","sla":"服务等级协议","calculation":"计算","wednesday":"星期三","expected":"预期的；预计",
+  "live":"上线；实时的；居住","september":"九月","th":"日期序数后缀","advanced":"高级的；先进的",
+  "exercise":"练习；锻炼","viewpoints":"观点"
+};
+
 // ===== js/gloss.js =====
 // ===== Gloss Module — 全局点词释义 =====
 // V4 新增。解决体验问题：句子里有不认识的单词，点一下就能看到汉语意思，
@@ -2119,6 +2328,7 @@ window.WEC_Algo = {
     }
     for (const cand of _lemmaCandidates(rawWord)) {
       if (FUNCTION_WORDS[cand]) return { chinese: FUNCTION_WORDS[cand], source: 'dict' };
+      if (typeof READING_DICT !== 'undefined' && READING_DICT[cand]) return { chinese: READING_DICT[cand], source: 'dict' };
       if (QUESTION_WORDS[cand]) return { chinese: QUESTION_WORDS[cand], source: 'dict' };
     }
     return { chinese: '', source: 'none' };
@@ -7261,6 +7471,11 @@ const VOCAB_ITEMS_EXTRA = [
 
 if (typeof VOCAB_ITEMS !== "undefined") { VOCAB_ITEMS.push(...VOCAB_ITEMS_EXTRA); }
 
+// ===== js/ngsl-data.js =====
+// ===== NGSL 词频分级数据（2801 词） =====
+// 来源：用户提供的 NGSL.json。用于阅读难度、高频词覆盖与学习分级，不虚构中文释义。
+const NGSL_DATA = {"1000":["be","and","of","to","a","in","have","it","you","he","for","they","not","that","we","on","with","this","i","do","as","at","she","but","from","by","will","or","say","go","so","all","if","one","would","about","can","which","there","know","more","get","who","like","when","think","make","time","see","what","up","some","other","out","good","people","year","take","no","well","because","very","just","come","could","work","use","than","now","then","also","into","only","look","want","give","first","new","way","find","over","any","after","day","where","thing","most","should","need","much","right","how","back","mean","even","may","here","many","such","last","child","tell","really","call","before","company","through","down","show","life","man","change","place","long","between","feel","too","still","problem","write","same","lot","great","try","leave","number","both","own","part","point","little","help","ask","meet","start","talk","something","put","another","become","interest","country","old","each","school","late","high","different","off","next","end","live","why","while","world","week","play","might","must","home","never","include","course","house","report","group","case","woman","around","book","family","seem","let","again","kind","keep","hear","system","every","question","during","always","big","set","small","study","follow","begin","important","since","run","under","turn","few","bring","early","hand","state","move","money","fact","however","area","provide","name","read","friend","month","large","business","without","information","open","order","government","word","issue","market","pay","build","hold","service","against","believe","second","though","yes","love","increase","job","plan","result","away","example","happen","offer","young","close","program","lead","buy","understand","thank","far","today","hour","student","face","hope","idea","cost","less","room","until","reason","form","spend","head","car","learn","level","person","experience","once","member","enough","bad","city","night","able","support","whether","line","present","side","quite","although","sure","term","least","age","low","speak","within","process","public","often","train","possible","actually","rather","view","together","consider","price","parent","hard","party","local","control","already","concern","product","lose","story","almost","continue","stand","whole","yet","rate","care","expect","effect","sort","ever","anything","cause","fall","deal","water","send","allow","soon","watch","base","probably","suggest","past","power","test","visit","center","grow","nothing","return","mother","walk","matter","mind","value","office","record","stay","force","stop","several","light","develop","remember","bit","share","real","answer","sit","figure","letter","decide","language","subject","class","development","town","half","minute","food","break","clear","future","either","ago","per","remain","top","among","win","color","involve","reach","social","period","across","note","history","create","drive","along","type","sound","eye","music","game","political","free","receive","moment","sale","policy","further","body","require","wait","general","appear","toward","team","easy","individual","full","black","sense","perhaps","add","rule","pass","produce","sell","short","agree","law","everything","research","cover","paper","position","near","human","computer","situation","staff","activity","film","morning","war","account","shop","major","someone","above","design","event","special","sometimes","condition","carry","choose","father","decision","table","certain","forward","main","die","bear","cut","describe","himself","available","especially","strong","rise","girl","maybe","community","else","particular","role","join","difficult","please","detail","difference","action","health","eat","step","true","phone","themselves","draw","white","date","practice","model","raise","customer","front","explain","door","outside","behind","economic","site","approach","teacher","land","charge","finally","sign","claim","relationship","travel","enjoy","death","nice","amount","improve","picture","boy","regard","organization","happy","couple","act","range","quality","project","round","opportunity","road","accord","list","wish","therefore","wear","fund","rest","kid","industry","education","measure","kill","serve","likely","certainly","national","itself","teach","field","security","air","benefit","trade","risk","news","standard","vote","percent","focus","stage","space","instead","realize","usually","data","single","address","performance","chance","accept","society","technology","mention","choice","save","common","culture","total","demand","material","limit","listen","due","wrong","foot","effort","attention","upon","check","complete","lie","pick","reduce","personal","ground","animal","arrive","patient","current","century","evidence","exist","similar","fight","leader","fine","street","former","contact","particularly","wife","sport","prepare","discuss","response","voice","piece","finish","suppose","apply","president","fire","compare","court","police","store","poor","knowledge","laugh","arm","heart","source","employee","manage","simply","bank","firm","cell","article","fast","attack","foreign","surprise","feature","factor","pretty","recently","affect","drop","recent","relate","official","financial","miss","art","campaign","private","pause","everyone","forget","page","worry","summer","drink","opinion","park","represent","key","inside","manager","international","contain","notice","wonder","nature","structure","section","myself","exactly","plant","paint","worker","press","whatever","necessary","region","growth","evening","influence","respect","various","catch","thus","skill","attempt","son","simple","medium","average","stock","management","character","bed","hit","establish","indeed","final","economy","fit","guy","function","yesterday","image","size","behavior","addition","determine","station","population","fail","environment","production","contract","player","comment","enter","occur","alone","significant","drug","wall","series","direct","success","tomorrow","director","clearly","lack","review","depend","race","recognize","window","purpose","department","gain","tree","college","argue","board","holiday","mark","church","machine","achieve","item","prove","cent","season","floor","stuff","wide","anyone","method","analysis","election","military","hotel","club","below","movie","doctor","discussion","sorry","challenge","nation","nearly","statement","link","despite","introduce","advantage","ready","marry","strike","mile","seek","ability","unit","card","hospital","quickly","interview","agreement","release","tax","solution","capital","popular","specific","beautiful","fear","aim","television","serious","target","degree","pull","red","husband","access","movement","treat","identify","loss","shall","modern","pressure","bus","treatment","yourself","supply","village","worth","natural","express","indicate","attend","brother","investment","score","organize","trip","beyond","sleep","fish","promise","potential","energy","trouble","relation","touch","file","middle","bar","suffer","strategy","deep","except","clean","tend","advance","fill","star","network","generally","operation","match","avoid","seat","throw","task","normal","goal","associate","blue","positive","option","box","huge","message","instance","style","refer","cold","push","quarter","assume","baby","successful","sing","doubt","competition","theory","propose","reference","argument","adult","fly","document","pattern","application","hot","obviously","unclear","bill","search","separate","central","career","anyway","speech","dog","officer","throughout","oil","dress","profit","guess","fun","protect","resource","science","disease","balance","damage","basis","author","basic","encourage","hair","male","operate","reflect","exercise","useful","restaurant","income","property","previous","dark","imagine","okay","earn","daughter","post","newspaper","define","conclusion","clock","everybody","weekend","perform","professional","mine","debate","memory","green","song","object","maintain","credit","ring","discover","dead","afternoon","prefer","extend","possibility","direction","facility","variety","daily","clothes","screen","track","dance","completely","female","responsibility","original","sister","rock","dream","nor","university","easily","agency","dollar","garden","fix","ahead","cross","yeah","weight","legal","proposal","version","conversation","somebody","pound","magazine","shape","sea","immediately","welcome","smile","communication","agent","traditional","replace","judge","herself","suddenly","generation","estimate","favorite","difficulty","purchase","the"],"2000":["announce","unless","independent","recommend","survey","majority","stick","request","rich","wind","none","exchange","budget","famous","blood","appropriate","block","warm","count","scene","writer","content","prevent","safe","invite","mix","element","effective","correct","medical","admit","beat","telephone","copy","committee","aware","advice","handle","glass","trial","stress","radio","administration","complex","text","context","ride","directly","heavy","remove","conduct","equipment","otherwise","title","extra","executive","chair","expensive","sample","sex","deliver","video","connection","primary","weather","collect","inform","principle","straight","appeal","highly","trust","wonderful","flat","absolutely","flow","fair","additional","responsible","farm","collection","hang","negative","band","relative","tour","alternative","software","pair","ship","attitude","cheap","double","leg","observe","sentence","print","progress","truth","nobody","examine","lay","speed","politics","reply","display","transfer","perfect","slightly","overall","intend","user","respond","dinner","slow","regular","physical","apart","suit","federal","reveal","percentage","peace","status","crime","decline","decade","launch","warn","consumer","favor","dry","partner","institution","spot","horse","eventually","heat","excite","reader","importance","distance","guide","grant","taxi","feed","pain","sector","mistake","ensure","satisfy","chief","cool","expert","wave","south","labor","surface","library","excellent","edge","camp","audience","lift","procedure","email","global","struggle","advertise","select","surround","extent","river","annual","fully","contrast","roll","reality","photograph","artist","conflict","entire","presence","crowd","corner","gas","shift","net","category","secretary","defense","quick","cook","spread","nuclear","scale","driver","ball","cry","introduction","requirement","north","confirm","senior","photo","refuse","transport","emerge","map","concept","island","reform","neither","football","survive","flight","left","solve","neighbor","background","technique","traffic","improvement","tool","consequence","circumstance","smoke","reaction","rain","busy","lesson","brain","mass","funny","contribute","failure","schedule","speaker","bottom","adopt","combine","mountain","waste","hide","marriage","ticket","meal","colleague","bag","repeat","equal","expression","plus","extremely","owner","plane","commercial","lady","duty","strength","connect","cultural","arrange","scheme","payment","unfortunately","brief","bird","demonstrate","contribution","appreciate","chapter","secret","apparently","novel","union","burn","trend","initial","pleasure","suggestion","critical","gather","mostly","earth","pop","essential","desire","promote","currently","employ","path","topic","beach","attract","engage","powerful","flower","crisis","settle","boat","aid","fan","kitchen","twice","fresh","delay","safety","engineer","quiet","insurance","nurse","divide","length","investigation","package","somewhere","expand","commit","obvious","jump","weapon","relatively","host","winter","district","broad","tire","spring","spirit","lunch","actual","pool","battle","tradition","cash","hardly","award","coach","experiment","consideration","strange","code","possibly","threat","accident","impossible","revenue","enable","afraid","active","conclude","religious","cancer","convince","vary","environmental","sun","healthy","blow","volume","location","invest","proceed","wash","actor","glad","tape","whereas","opposite","stone","sum","murder","monitor","soldier","finance","hate","egg","concert","shock","comfortable","usual","carefully","pack","recall","wine","camera","swim","manufacture","theater","cycle","coffee","totally","museum","visitor","freedom","construction","dear","objective","moreover","onto","historical","oppose","branch","vehicle","scientist","route","bind","belong","taste","tonight","fashion","danger","bomb","army","dangerous","decrease","hurt","council","editor","normally","sight","generate","gift","delivery","deny","guest","anybody","bedroom","quote","climb","basically","violence","minister","mainly","mouth","noise","manner","gun","square","occasion","familiar","ignore","destroy","affair","civil","locate","citizen","temperature","gold","domestic","load","belief","troop","technical","remind","arrangement","skin","prison","switch","acquire","corporate","fairly","wood","participate","tough","tear","representative","capacity","border","shake","assessment","shoe","ought","ad","fee","hall","regulation","escape","studio","proper","relax","tourist","component","afford","lawyer","suspect","cup","description","confidence","industrial","complain","perspective","error","arrest","assess","register","asset","signal","finger","relevant","explore","leadership","commitment","wake","necessarily","bright","frame","slowly","bond","hire","hole","tie","internal","chain","literature","victim","threaten","division","secure","amaze","device","birth","forest","label","root","factory","expense","channel","investigate","recommendation","rank","typical","west","friendly","resident","provision","concentrate","plenty","export","entirely","strongly","bridge","consist","graduate","brand","moral","insist","combination","abuse","ice","principal","master","definitely","session","grade","nevertheless","predict","previously","protection","largely","wed","rent","shot","appearance","reasonable","guarantee","till","theme","judgment","odd","approve","loan","definition","elect","atmosphere","farmer","comparison","characteristic","license","rely","narrow","succeed","identity","desk","permit","seriously","wild","empty","commission","unique","association","instrument","investor","practical","tea","lovely","soft","row","youth","lock","fuel","expectation","employment","celebrate","sexual","shoulder","breath","increasingly","import","bottle","ourselves","sheet","engine","cast","notion","conservative","journey","opposition","relief","debt","honor","outcome","blame","explanation","arise","musical","recover","dad","stretch","declare","retire","tiny","careful","suitable","native","fruit","analyze","witness","mail","terrible","researcher","ordinary","selection","anywhere","mental","participant","vision","personality","specifically","fat","entry","fellow","chemical","capture","tip","discount","peak","chairman","proportion","ear","disappear","shout","yard","constant","significantly","hill","considerable","instruction","intelligence","ideal","folk","surely","guard","cat","somewhat","kiss","presentation","joint","compete","poll","weak","faith","reduction","reserve","complaint","bore","mission","somehow","tone","neighborhood","passenger","justice","phase","thin","rush","formal","religion","employer","reject","latter","plate","ban","steal","protest","index","sad","frequently","circle","helpful","command","attractive","sick","impression","unable","joke","sky","column","electronic","impose","criminal","besides","properly","ancient","coast","ill","kick","closely","multiple","yield","via","legislation","county","unlike","mobile","assistant","implement","chart","attach","hell","everywhere","advise","household","acknowledge","reward","east","hat","academic","voter","meanwhile","furthermore","accuse","scientific","wage","absence","construct","remark","medicine","professor","rare","intention","dozen","settlement","gap","widely","minimum","northern","estate","equally","expose","alive","shut","victory","resolve","critic","variable","enormous","sweet","permanent","emotion","pursue","tall","urge","enemy","appoint","milk","talent","smell","prior","priority","online","phrase","pilot","stable","merely","resolution","communicate","injury","vast","exhibition","producer","regional","immediate","incident","childhood","draft","slip","accompany","politician","angry","knock","seed","salary","illustrate","imply","breakfast","temporary","liberal","lake","qualify","competitive","truly","hi","yellow","habit","disk","core","emotional","aircraft","self","metal","existence","bone","panel","prime","appointment","emphasize","maximum","effectively","elsewhere","bother","initiative","sharp","diet","motion","gray","plastic","complicate","discipline","disappoint","boss","assumption","freeze","extreme","passage","reputation","forth","negotiation","mechanism","coat","democracy","pocket","lucky","crash","observation","meat","concentration","implication","deserve","unusual","defend","classic","king","interaction","repair","collapse","borrow","fundamental","dish","abroad","soul","capable","defeat","presidential","perfectly","enhance","proud","emergency","educational","distinguish","substantial","nearby","manufacturer","slide","valuable","personally","breast","cope","approximately","accommodation","highlight","reporter","climate","shirt","exception","corporation","chip","winner","encounter","brown","breathe","excuse","partly","tennis","urban","confuse","southern","output","beauty","massive","install","calculate","mouse","mathematics","upper","creation","occupy","outline","sufficient","update","luck","preserve","split","swing","illness","journalist","sudden","advertisement","consistent","originally","aside","comfort","secondly","severe","gene","prospect","snow","plot","neck","criterion","primarily","integrate","criticism","convention","bet","retain","sequence","plain","volunteer","rural","calm","abandon","examination","silence","rapidly","efficient","revolution","delight","spell","premise","lean","dramatic","differ","grateful","protein","bike","distribute","intellectual","derive","crucial","unemployment","wheel","crop","minority","origin","interpretation","gentleman","drama","landscape","educate","toy","fault","exhibit","minor","hunt","storm","thick","achievement","negotiate","shoot"],"3000":["supplier","prize","typically","peer","pension","wing","acquisition","laughter","deeply","recognition","electricity","assistance","roof","retirement","respectively","variation","ultimately","proof","soil","smart","layer","upset","tooth","representation","preparation","dispute","agenda","emphasis","edition","silver","entertainment","honest","undertake","retail","wire","unlikely","gay","publication","slight","unknown","framework","zone","restrict","trace","inch","equivalent","solid","enterprise","elderly","owe","governor","uniform","port","pitch","arrival","contemporary","gate","ease","beer","specialist","assure","profile","mood","episode","crack","numerous","submit","symptom","virtually","era","coverage","tension","cable","sensitive","nervous","input","isolate","prisoner","eliminate","tight","wet","secondary","welfare","recruit","exclude","string","cloud","persuade","inspire","grand","hence","crew","phenomenon","pupil","false","assist","restore","formula","alter","perceive","routine","sink","stare","anymore","hero","supporter","convert","steady","meter","truck","nose","beside","sail","disaster","pace","heavily","devote","terrorist","justify","vital","fascinate","external","spare","whenever","depression","guilty","underlie","mom","distinction","satisfaction","incorporate","pour","sweep","obligation","sir","evaluate","anger","pub","perception","naturally","currency","database","initially","territory","stream","rarely","height","apparent","western","expansion","constantly","muscle","scare","badly","everyday","boundary","ratio","essay","scream","withdraw","pollution","disorder","furniture","symbol","apartment","demonstration","analyst","platform","steel","cake","transform","wound","restriction","foundation","designer","strain","innovation","album","singer","trail","trap","loose","extension","wealth","gradually","tank","evil","remarkable","tune","grass","invitation","transition","frighten","bid","breed","extraordinary","brilliant","adviser","stem","reverse","mode","mirror","awful","pose","adjust","creative","nowadays","poem","agricultural","competitor","alcohol","festival","vegetable","van","confident","planet","curve","knee","overcome","web","depth","entrance","log","giant","god","portion","substance","extensive","interpret","independence","sugar","inner","harm","consult","pink","shadow","strip","smooth","intervention","impress","exam","vice","radical","similarly","behave","loud","dimension","subsequent","infection","jacket","efficiency","dirty","statistic","regularly","resort","iron","broadcast","membership","bread","blind","pure","bloody","ally","quantity","bend","mature","briefly","alarm","disturb","sustain","flood","poverty","crazy","cite","newly","parallel","gender","sponsor","boot","accurate","dealer","button","burden","desert","mate","occasionally","shareholder","bowl","discovery","resistance","bath","frequency","criticize","tap","philosophy","lip","attribute","apologize","approval","grab","entitle","lend","involvement","exposure","conventional","digital","translate","edit","formation","deposit","pleasant","overseas","advocate","establishment","summary","rough","pen","recovery","seal","tube","tower","characterize","specify","exact","spin","operator","infant","dig","drag","mount","wrap","anticipate","dependent","specialize","angle","chicken","anxiety","virus","precisely","rival","offense","detect","teenager","admire","moderate","surgery","musician","significance","shower","illegal","charity","universal","cigarette","constitute","adequate","consultant","historian","cousin","visual","stupid","keen","ethnic","twin","clinical","eastern","forecast","segment","custom","adapt","sand","cap","prompt","charm","react","lecture","venture","compound","rescue","mess","preference","comprehensive","incentive","league","dialog","cream","rapid","cancel","regret","dismiss","margin","beneath","opponent","resist","capability","absolute","correspond","stroke","dare","barrier","rid","divorce","ruin","bury","counsel","tendency","frequent","motor","survival","counter","possess","permission","valley","float","mad","greatly","visible","electric","impressive","evolution","awareness","violent","slave","wealthy","architecture","acceptable","journal","coal","measurement","random","successfully","depress","illustration","burst","privilege","buyer","mutual","rail","motivate","laboratory","mortgage","promotion","passion","champion","fulfill","dust","dedicate","roughly","skirt","province","march","evaluation","compromise","accomplish","weakness","announcement","salt","glance","opera","contest","brush","embarrass","gallery","genetic","aggressive","chest","format","literary","govern","embrace","praise","silent","pump","publisher","celebration","golf","compensation","classical","weigh","versus","deficit","modify","flash","friendship","profession","literally","equation","gesture","entertain","fantastic","assign","inflation","historic","injure","remote","therapy","orange","twist","personnel","imagination","disagree","throat","insight","tackle","forever","exceed","expenditure","joy","pregnant","reliable","gear","poet","fortune","ceremony","pile","pig","mixture","automatically","scholar","psychological","dramatically","stake","creature","partnership","participation","clause","penalty","chamber","fancy","poetry","chat","clothing","evolve","sake","shelf","boost","tail","possession","abortion","curious","wooden","boom","tale","democratic","maintenance","consequently","pot","cow","strengthen","whilst","constraint","fold","bin","undergo","potentially","scope","pretend","diversity","allege","pride","intense","inquiry","resign","craft","strict","concrete","shell","damn","distinct","humor","limitation","indication","stability","wise","neglect","compose","jail","shelter","mere","carbon","regulate","cheese","trigger","pipe","destruction","guitar","flag","piano","magic","mystery","ski","whisper","rear","menu","species","moon","presumably","bless","airline","amendment","grandmother","jury","cooperation","civilian","composition","coin","regardless","scan","bunch","racial","greet","hopefully","sanction","trick","paragraph","maker","chocolate","stimulate","belt","potato","narrative","tissue","barely","invent","tourism","pro","stair","hesitate","shine","motivation","romantic","firmly","interior","stomach","nowhere","pray","championship","servant","immigrant","excess","complexity","liability","surprisingly","extract","implementation","bias","differently","catalog","continuous","golden","stamp","guideline","envelope","knife","biological","consume","luxury","weekly","wherever","bite","printer","firstly","anxious","adventure","fence","exhaust","attraction","ocean","quietly","castle","veteran","reflection","nerve","determination","altogether","fiction","carpet","cluster","confusion","hurry","logic","controversial","raw","grammar","revise","hint","hook","bell","liquid","panic","uncle","rice","slope","happiness","genuine","vessel","verb","reckon","silly","transportation","harbor","comedy","chase","storage","universe","horrible","sheep","lover","rat","portrait","innocent","substitute","supplement","adjustment","reasonably","filter","flexible","abstract","tent","precise","distant","stranger","shade","grain","situate","summarize","leap","snap","probability","leather","uncertainty","swear","refugee","shore","monthly","comprise","stir","excitement","sigh","pregnancy","experimental","institutional","slice","wander","empire","subsequently","gentle","attendance","ownership","qualification","suspend","functional","voluntary","pale","stain","athlete","organic","tongue","server","structural","fool","alongside","unite","gently","compute","wipe","weird","gaze","fade","cough","hypothesis","royal","theoretical","curtain","mayor","darkness","aunt","tournament","registration","fragment","listener","tender","density","ugly","module","faithfully","autumn","cheek","attachment","holder","grin","noun","fortunate","alright","lazy","hello","hunger","insure","ashamed","found","thirst","dominate"]};
+
 // ===== js/ai-adapter.js =====
 // ===== Local AI Adapter =====
 // V1 使用本地规则和模板，未来可替换为 RemoteAIAdapter
@@ -7747,6 +7962,7 @@ function router(page, params = {}) {
     case 'today': renderToday(app); break;
     case 'review': renderReview(app); break;
     case 'practice': renderProgress(app); break;
+    case 'reading': renderReading(app, params); break;
     case 'progress': renderProgress(app); break;
     case 'more': renderMore(app); break;
     case 'learn': renderLearn(app, params); break;
@@ -7855,7 +8071,7 @@ async function renderToday(app) {
 
       <div style="text-align:center; padding: 20px 0;">
         <div style="font-size: 48px; font-weight: 700; color: var(--color-primary); font-family: Georgia, serif;">${masteredCount}<span style="font-size:20px; color: var(--color-text-light);"> 词</span></div>
-        <div class="text-secondary text-sm mt-sm">已真正掌握 · Day ${studyDay}/168 · 连续 ${appSettings.streakDays || 0} 天</div>
+        <div class="text-secondary text-sm mt-sm">已真正掌握 · Day ${studyDay}/${DAILY_LESSONS.length} · 连续 ${appSettings.streakDays || 0} 天</div>
       </div>
 
       <div class="card card-hero">
@@ -7948,7 +8164,7 @@ async function startSession() {
   currentSession = {
     day: studyDay,
     step: 0,
-    steps: ['vocab-precheck', 'listening', 'review', 'learn', 'work-practice', 'daily-challenge', 'session-summary'],
+    steps: ['vocab-precheck', 'listening', 'reading', 'review', 'session-summary'],
     results: {}
   };
   startVocabSession(studyDay);
@@ -8121,7 +8337,7 @@ function renderListeningPhase(app) {
         </div>
 
         <div class="card">
-          <div id="comprehension-stem" style="font-size: 18px; font-weight: 600; line-height: 1.6;">${q.q}</div>
+          <div id="comprehension-stem" style="font-size: 18px; font-weight: 600; line-height: 1.6;">${typeof _v5QuestionStem === 'function' ? _v5QuestionStem(q) : q.q}</div>
         </div>
 
         <div class="card">
@@ -8204,7 +8420,7 @@ function renderListeningPhase(app) {
           <div class="text-light text-xs mt-sm">💡 第三遍建议：遮住文本用 1.15 倍速听，能跟上说明真正听懂了</div>
         </div>
 
-        <div class="card" id="dictation-card">
+        <details class="card" id="dictation-card"><summary class="text-secondary text-sm">✍️ 微听写 · 选学</summary><div class="mt-md">
           <div class="text-secondary text-sm mb-sm">✍️ 微听写（可选，1 句）</div>
           <div class="text-light text-xs mb-md">播放句子并写下你听到的内容，程序逐词比对</div>
           <div class="flex gap-sm mb-sm">
@@ -8214,12 +8430,12 @@ function renderListeningPhase(app) {
           <textarea id="dictation-input" placeholder="写下你听到的句子..." style="min-height: 60px;"></textarea>
           <button class="btn btn-primary btn-sm btn-block mt-sm" onclick="checkDictation()">核对</button>
           <div id="dictation-result" class="mt-md" style="display:none;"></div>
-        </div>
+        </div></details>
 
         <div class="flex gap-md mt-lg">
           <button class="btn btn-ghost flex-1" onclick="listeningBack()">← 上一步</button>
           <button class="btn btn-outline flex-1" onclick="navTo('today')">退出</button>
-          <button class="btn btn-primary flex-1" onclick="nextSessionStep()">下一步：复习 →</button>
+          <button class="btn btn-primary flex-1" onclick="${currentSession ? 'nextSessionStep()' : `navTo('reading',{day:${studyDay}})`}">下一步：阅读 →</button>
         </div>
       </div>
     `;
@@ -8562,7 +8778,7 @@ function updateTTSRate(val) { updateSettings({ speechRate: parseFloat(val) }); }
 
 // ===== Session Bar =====
 function renderSessionBar(currentStep) {
-  const steps = ['听力', '复习', '学习', '练习', '挑战', '总结'];
+  const steps = ['听力', '阅读', '复习', '总结'];
   let dots = '';
   for (let i = 0; i < steps.length; i++) {
     const cls = i < currentStep ? 'done' : (i === currentStep ? 'active' : '');
@@ -8629,17 +8845,17 @@ function renderReviewCard(app) {
 
   const { item, mastery } = currentReviewItems[currentReviewIdx];
   reviewAnswerVisible = false;
-  const sessionBar = currentSession ? renderSessionBar(1) : '';
+  const sessionBar = currentSession ? renderSessionBar(2) : '';
 
   // 随机选择题型
-  const questionTypes = ['cn-to-en', 'fill-blank', 'sentence-reorder', 'scenario-answer'];
+  const questionTypes = ['cn-to-en', 'fill-blank'];
   const qType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
 
   let questionHTML = '';
   switch(qType) {
     case 'cn-to-en':
       questionHTML = `
-        <div class="text-secondary text-sm mb-sm">看到中文，说出/写出英文</div>
+        <div class="text-secondary text-sm mb-sm">看到中文，先在心里回忆英文</div>
         <div style="font-size: 20px; font-weight: 600; padding: 16px; background: var(--color-bg-subtle); border-radius: 12px;">${item.chinese}</div>
         <div class="text-light text-xs mt-sm">提示：${item.chunk || item.example_sentence?.split(' ').slice(0,3).join(' ') + '...'}</div>
       `;
@@ -8650,7 +8866,7 @@ function renderReviewCard(app) {
       const blankWord = words[blankIdx];
       const sentenceWithBlank = words.map((w, i) => i === blankIdx ? '____' : w).join(' ');
       questionHTML = `
-        <div class="text-secondary text-sm mb-sm">填空：补全句子</div>
+        <div class="text-secondary text-sm mb-sm">句子回忆：空格处应该是哪个词？</div>
         <div style="font-size: 17px; padding: 16px; background: var(--color-bg-subtle); border-radius: 12px; line-height: 1.8;">${sentenceWithBlank}</div>
         <div class="text-light text-xs mt-sm">缺失的词：${blankWord.length} 个字母</div>
       `;
@@ -8693,11 +8909,10 @@ function renderReviewCard(app) {
       </div>
 
       <div class="card">
-        <textarea id="review-answer" placeholder="输入你的回答..." style="min-height: 100px;"></textarea>
+        <div class="text-light text-xs mb-md">不用输入，也不用开口；先回忆，再核对答案。</div>
         <div class="flex gap-sm mt-sm">
-          <button class="btn btn-ghost btn-sm flex-1" onclick="useVoiceInput()">🎤 语音</button>
           <button class="btn btn-ghost btn-sm flex-1" onclick="showHint('${item.id}')">💡 提示</button>
-          <button class="btn btn-ghost btn-sm flex-1" onclick="showReviewAnswer()">查看答案</button>
+          <button class="btn btn-primary btn-sm flex-1" onclick="showReviewAnswer()">查看答案</button>
         </div>
       </div>
 
@@ -8824,14 +9039,14 @@ function renderReviewComplete(app) {
   const isSession = !!currentSession;
   app.innerHTML = `
     <div class="container page">
-      ${isSession ? renderSessionBar(1) : ''}
+      ${isSession ? renderSessionBar(2) : ''}
       <div class="empty-state" style="padding: 60px 20px;">
         <div style="font-size: 48px;">🎉</div>
         <h2 style="margin-top: 16px;">复习完成！</h2>
         <p class="text-secondary mt-sm">已完成 ${currentReviewItems.length} 个表达复习</p>
       </div>
       ${isSession ? `
-        <button class="btn btn-primary btn-block btn-lg" onclick="nextSessionStep()">下一步：学习新表达 →</button>
+        <button class="btn btn-primary btn-block btn-lg" onclick="nextSessionStep()">查看今日总结 →</button>
       ` : `
         <button class="btn btn-primary btn-block btn-lg" onclick="navTo('today')">返回首页</button>
       `}
@@ -9520,6 +9735,8 @@ async function renderSessionSummary(app, params) {
   const learningCount = allMastery.filter(m => m.mastery_state === 'Learning').length;
   const reviewingCount = allMastery.filter(m => m.mastery_state === 'Reviewing').length;
   const week = getWeek(studyDay);
+  const courseDays = DAILY_LESSONS.length;
+  const needsCompletion = !!currentSession && !(todayRecord && todayRecord.completed);
 
   app.innerHTML = `
     <div class="container page">
@@ -9531,11 +9748,10 @@ async function renderSessionSummary(app, params) {
 
       <div class="card">
         <div class="text-secondary text-sm mb-md">今日成果</div>
-        <div class="flex justify-between mb-sm"><span>听力热身</span><span class="badge badge-mint">✓</span></div>
-        <div class="flex justify-between mb-sm"><span>主动复习</span><span class="badge badge-mint">✓</span></div>
-        <div class="flex justify-between mb-sm"><span>学习表达</span><span class="badge badge-mint">✓</span></div>
-        <div class="flex justify-between mb-sm"><span>工作练习</span><span class="badge badge-mint">✓</span></div>
-        <div class="flex justify-between"><span>今日挑战</span><span class="badge badge-mint">✓</span></div>
+        <div class="flex justify-between mb-sm"><span>词汇学习与回忆</span><span class="badge badge-mint">✓</span></div>
+        <div class="flex justify-between mb-sm"><span>工作听力理解</span><span class="badge badge-mint">✓</span></div>
+        <div class="flex justify-between mb-sm"><span>工作短文阅读</span><span class="badge badge-mint">✓</span></div>
+        <div class="flex justify-between"><span>句子主动复习</span><span class="badge badge-mint">✓</span></div>
       </div>
 
       <div class="card">
@@ -9554,18 +9770,23 @@ async function renderSessionSummary(app, params) {
             <div class="text-xs text-light">已掌握</div>
           </div>
         </div>
-        <div class="progress-bar"><div class="progress-bar-fill mint" style="width: ${Math.min(100, studyDay/168*100)}%"></div></div>
-        <div class="text-light text-xs mt-sm">总进度 ${Math.round(studyDay/168*100)}% · 连续 ${appSettings.streakDays} 天</div>
+        <div class="progress-bar"><div class="progress-bar-fill mint" style="width: ${Math.min(100, studyDay/courseDays*100)}%"></div></div>
+        <div class="text-light text-xs mt-sm">总进度 ${Math.round(studyDay/courseDays*100)}% · 连续 ${appSettings.streakDays} 天</div>
       </div>
 
       <div class="card" style="background: var(--color-bg-subtle);">
         <div class="text-secondary text-sm">💡 明日预告</div>
-        <div class="text-sm mt-sm">${studyDay < 168 ? (DAILY_LESSONS.find(l => l.day === studyDay+1)?.theme || '继续学习') : '已完成全部课程！'}</div>
+        <div class="text-sm mt-sm">${studyDay < courseDays ? (DAILY_LESSONS.find(l => l.day === studyDay+1)?.theme || '继续学习') : '已完成全部课程！'}</div>
       </div>
 
-      <button class="btn btn-primary btn-block btn-lg mt-lg" onclick="navTo('today')">返回首页</button>
+      <button class="btn btn-primary btn-block btn-lg mt-lg" onclick="finishSessionSummary()">${needsCompletion ? '完成今日学习' : '返回首页'}</button>
     </div>
   `;
+}
+
+function finishSessionSummary() {
+  if (currentSession) completeSession();
+  else navTo('today');
 }
 
 // ===== Progress Page =====
@@ -10731,7 +10952,7 @@ function renderSettingsPage(app) {
           <div class="text-light text-xs mb-sm">天数不对？比如浏览器清理数据后回到了 Day 1，可手动校正：</div>
           <div class="flex gap-sm items-center">
             <span class="text-sm" style="white-space: nowrap;">我实际学到第</span>
-            <input id="adjust-day-input" type="number" min="1" max="168" placeholder="${getStudyDay(appSettings)}"
+            <input id="adjust-day-input" type="number" min="1" max="${DAILY_LESSONS.length}" placeholder="${getStudyDay(appSettings)}"
               style="width: 70px; padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 8px; text-align: center;">
             <span class="text-sm" style="white-space: nowrap;">天</span>
             <button class="btn btn-outline btn-sm flex-1" onclick="adjustStudyDay()">校正</button>
@@ -10768,8 +10989,8 @@ function updateSetting(key, value) {
 function adjustStudyDay() {
   const el = document.getElementById('adjust-day-input');
   const n = parseInt(el && el.value, 10);
-  if (!n || n < 1 || n > 168) {
-    showToast('请输入 1-168 之间的天数');
+  if (!n || n < 1 || n > DAILY_LESSONS.length) {
+    showToast(`请输入 1-${DAILY_LESSONS.length} 之间的天数`);
     return;
   }
   const d = new Date();
@@ -12301,7 +12522,7 @@ function renderVocabSummary(app) {
       <div style="padding: 12px 0 32px;">
         <div class="flex gap-md">
           <button class="btn btn-outline flex-1" onclick="navTo('today')">返回 Today</button>
-          <button class="btn btn-primary flex-1" onclick="continueVocabAfterSession()">继续学习表达</button>
+          <button class="btn btn-primary flex-1" onclick="continueVocabAfterSession()">${currentSession ? '继续今日听力' : '去听今日短文'}</button>
         </div>
       </div>
     </div>
@@ -12314,12 +12535,9 @@ function retrySingleVocab(vocabId) {
 
 function continueVocabAfterSession() {
   if (!vocabSession) { navTo('today'); return; }
-  // Navigate to expression learning or today page based on session
-  if (vocabSession.day && vocabSession.day > 0) {
-    navTo('learn', { day: vocabSession.day });
-  } else {
-    navTo('today');
-  }
+  // V5：今日主线为词汇 → 听力 → 阅读；说写不再插入主流程。
+  if (currentSession) { nextSessionStep(); return; }
+  navTo('listening');
 }
 
 // ---------------------------------------------------------------------------
@@ -12341,6 +12559,478 @@ window.submitVocabInput = submitVocabInput;
 window.nextVocabQuiz = nextVocabQuiz;
 window.retrySingleVocab = retrySingleVocab;
 window.continueVocabAfterSession = continueVocabAfterSession;
+
+// ===== js/reading.js =====
+// ===== V5 Focus Mode: 首页 + 工作阅读 + 句子学习 =====
+// 学习优先级：词汇 → 听力 → 阅读；说和写保留为选学。
+// 内容来源：交接包 84 天课程 / 76 篇听读短文 / 120 条工作句子 / 544 词，NGSL 仅用于难度与词频标注。
+
+// ---------------------------------------------------------------------------
+// 本地小工具
+// ---------------------------------------------------------------------------
+function _v5Esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+function _v5Read(key, fallback) {
+  try { const v = JSON.parse(localStorage.getItem(key) || 'null'); return v == null ? fallback : v; }
+  catch (e) { return fallback; }
+}
+function _v5Write(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+}
+function _v5Gloss(text) {
+  return (typeof Gloss !== 'undefined' && Gloss.glossify) ? Gloss.glossify(text) : _v5Esc(text);
+}
+function _v5Speak(text, rate) {
+  try { SpeechUtils.speak(String(text || ''), { rate: rate || 0.92 }); } catch (e) {}
+}
+function _v5Lessons() {
+  return (typeof DAILY_LESSONS !== 'undefined' ? DAILY_LESSONS : [])
+    .filter(l => l && l.listening && l.listening.text)
+    .sort((a, b) => a.day - b.day);
+}
+function _v5QuestionStem(q) {
+  const text = String(q.q || '');
+  if (/main topic/i.test(text)) return '哪一句最能引出这段工作内容？';
+  if (/next step or key reason/i.test(text)) return '短文最后提到了哪项信息？';
+  if (/statement is true/i.test(text)) return '根据短文，哪一项说法正确？';
+  return text;
+}
+function _v5Sentences(text) {
+  return (String(text || '').match(/[^.!?]+[.!?]+/g) || [String(text || '')])
+    .map(s => s.trim()).filter(s => s.length > 2);
+}
+
+// NGSL 词频索引：1=前1000，2=第二个1000，3=第三个1000，0=表外
+let _v5NgslMap = null;
+function _v5NgslRank(word) {
+  if (!_v5NgslMap && typeof NGSL_DATA !== 'undefined') {
+    _v5NgslMap = {};
+    ['1000', '2000', '3000'].forEach((band, i) => {
+      (NGSL_DATA[band] || []).forEach(w => { if (!_v5NgslMap[w]) _v5NgslMap[w] = i + 1; });
+    });
+  }
+  if (!_v5NgslMap) return 0;
+  const w = String(word || '').toLowerCase();
+  const candidates = [w];
+  // NGSL 以词目为主；覆盖率统计需还原本篇中的常见词形，避免把 assigned / cases 误判为生词。
+  if (/ies$/.test(w) && w.length > 4) candidates.push(w.slice(0, -3) + 'y');
+  if (/ied$/.test(w) && w.length > 4) candidates.push(w.slice(0, -3) + 'y');
+  if (/ing$/.test(w) && w.length > 5) candidates.push(w.slice(0, -3), w.slice(0, -3) + 'e');
+  if (/ed$/.test(w) && w.length > 4) candidates.push(w.slice(0, -2), w.slice(0, -1));
+  if (/es$/.test(w) && w.length > 4) candidates.push(w.slice(0, -2), w.slice(0, -1));
+  if (/s$/.test(w) && w.length > 3) candidates.push(w.slice(0, -1));
+  if (/(.)\1(?:ing|ed)$/.test(w)) candidates.push(w.replace(/(.)\1(ing|ed)$/, '$1'));
+  for (const candidate of candidates) {
+    if (_v5NgslMap[candidate]) return _v5NgslMap[candidate];
+  }
+  return 0;
+}
+function _v5ReadingStats(lesson) {
+  const text = lesson.listening.text;
+  const words = text.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || [];
+  const sentences = _v5Sentences(text);
+  const known = words.filter(w => _v5NgslRank(w) > 0).length;
+  const coverage = words.length ? Math.round(known / words.length * 100) : 100;
+  const advanced = words.filter(w => _v5NgslRank(w) === 0).length;
+  const level = coverage >= 86 ? '高频为主' : coverage >= 74 ? '工作进阶' : '词汇挑战';
+  return { words: words.length, sentences: sentences.length, coverage, advanced, level,
+    minutes: Math.max(1, Math.ceil(words.length / 110)) };
+}
+function _v5Category(lesson) {
+  const s = `${lesson.theme || ''} ${lesson.theme_en || ''} ${lesson.listening.title || ''}`.toLowerCase();
+  if (/status|progress|update|report|汇报|进度|状态/.test(s)) return '进度汇报';
+  if (/meeting|discussion|agenda|follow-up|question|owner|customer|talking|会议|讨论|沟通|追问|问答|澄清/.test(s)) return '沟通问答';
+  if (/email|message|request|collaborat|邮件|协作|请求/.test(s)) return '邮件协作';
+  if (/issue|problem|ticket|error|complaint|问题|故障|投诉/.test(s)) return '问题处理';
+  return '日常协作';
+}
+
+// ---------------------------------------------------------------------------
+// 新首页：少而清晰，打开就知道下一步做什么
+// ---------------------------------------------------------------------------
+async function renderToday(app) {
+  const studyDay = getStudyDay(appSettings);
+  const lesson = DAILY_LESSONS.find(l => l.day === studyDay) || _v5Lessons()[0] || DAILY_LESSONS[0];
+  const stats = _v5ReadingStats(lesson);
+  const todayRecord = await dbGet(STORES.dailySessions, studyDay);
+  const isCompleted = todayRecord && todayRecord.completed;
+  const dueItems = await WEC_Algo.getDueReviewItems();
+  const dueCount = dueItems.length;
+  let masteredCount = 0;
+  try {
+    const allMastery = await dbGetAll(STORES.masteryRecords);
+    masteredCount = allMastery.filter(m => m.mastery_state === 'Mastered').length;
+  } catch (e) {}
+  const readHistory = _v5Read('wec_reading_history', []);
+  const savedSentences = _v5Read('wec_saved_sentences', []);
+
+  app.innerHTML = `
+    <div class="container page v5-home">
+      <header class="v5-topbar">
+        <div class="v5-brand"><span class="v5-brand-mark">W</span><span>Work English</span></div>
+        <button class="v5-day-pill" onclick="navTo('settings')">Day ${studyDay}</button>
+      </header>
+
+      <section class="v5-hero">
+        <div class="v5-hero-kicker">LISTEN · READ · WORK</div>
+        <h1>听懂工作英语，<br>读懂工作句子。</h1>
+        <p>今天只做好三件事：词进句子，句子进听力，听力进阅读。</p>
+        <button class="v5-hero-cta" onclick="startSession()">
+          <span>${isCompleted ? '再练一次今日内容' : '开始今日学习'}</span><span class="v5-cta-arrow">→</span>
+        </button>
+        <div class="v5-hero-meta">约 18–25 分钟 · ${lesson.theme} · ${dueCount ? dueCount + ' 个复习已排队' : '今天没有复习压力'}</div>
+      </section>
+
+      <section class="v5-metrics" aria-label="学习成果">
+        <div><strong>${masteredCount}</strong><span>真正掌握的词</span></div>
+        <div><strong>${readHistory.length}</strong><span>读完工作短文</span></div>
+        <div><strong>${savedSentences.length}</strong><span>收藏工作句子</span></div>
+      </section>
+
+      <div class="v5-section-title"><h2>今日主线</h2><span>按顺序学，也可以单独学</span></div>
+      <section class="v5-path">
+        <article class="v5-path-card">
+          <div class="v5-path-number">01</div>
+          <div class="v5-path-copy">
+            <div class="v5-path-label">WORDS · 约 8 分钟</div>
+            <h3>把单词放进工作句子</h3>
+            <p>先筛熟词，再学 6–10 个新词；主动回忆，不死磕词表。</p>
+            <button class="v5-text-link" onclick="v5StartVocab()">学今日词汇 <span>→</span></button>
+          </div>
+        </article>
+        <article class="v5-path-card">
+          <div class="v5-path-number">02</div>
+          <div class="v5-path-copy">
+            <div class="v5-path-label">LISTENING · 约 5 分钟</div>
+            <h3>${lesson.listening.title || lesson.theme_en || '工作听力'}</h3>
+            <p>先听再答题，最后看原文；随时回退，逐词点查。</p>
+            <button class="v5-text-link" onclick="v5StartListening()">听今日短文 <span>→</span></button>
+          </div>
+        </article>
+        <article class="v5-path-card">
+          <div class="v5-path-number">03</div>
+          <div class="v5-path-copy">
+            <div class="v5-path-label">READING · 约 ${stats.minutes + 2} 分钟</div>
+            <h3>${lesson.theme}</h3>
+            <p>${stats.words} 词 · ${stats.sentences} 句 · NGSL 高频覆盖 ${stats.coverage}% · ${stats.level}</p>
+            <button class="v5-text-link" onclick="navTo('reading', {day:${studyDay}})">读今日短文 <span>→</span></button>
+          </div>
+        </article>
+      </section>
+
+      <section class="v5-library-entry card-clickable" onclick="navTo('reading')">
+        <div><span class="v5-library-icon">▤</span></div>
+        <div class="v5-library-copy"><strong>工作阅读与句子库</strong><span>76 篇短文 · 120 条工作句子 · 随时点词、播放、收藏</span></div>
+        <span>→</span>
+      </section>
+
+      <details class="v5-optional">
+        <summary>说和写 · 选学，不影响今日主线</summary>
+        <div class="v5-optional-actions">
+          <button class="btn btn-outline" onclick="navTo('learn', {day:${studyDay}})">工作表达</button>
+          <button class="btn btn-outline" onclick="navTo('work-practice')">工作写作</button>
+          <button class="btn btn-outline" onclick="navTo('daily-challenge')">今日挑战</button>
+        </div>
+      </details>
+      <p class="v5-gentle-note">不用追赶天数。今天学一点，能听懂、能读懂，就是进步。</p>
+    </div>
+  `;
+}
+function v5StartVocab() {
+  currentSession = null;
+  startVocabSession(getStudyDay(appSettings));
+}
+function v5StartListening() {
+  currentSession = null;
+  navTo('listening');
+}
+
+// ---------------------------------------------------------------------------
+// 阅读文章库 / 工作句子库
+// ---------------------------------------------------------------------------
+let readingLibraryTab = 'articles';
+let readingCategoryFilter = '全部';
+let readingLibraryExpanded = false;
+let readingSentenceExpanded = false;
+let readingSearch = '';
+let readingState = null;
+
+async function renderReading(app, params = {}) {
+  if (params.day || params.session) {
+    const day = Number(params.day) || getStudyDay(appSettings);
+    readingState = {
+      day, phase: 'read', quizIdx: 0, correct: 0, answered: false,
+      results: [], isSession: !!params.session, recorded: false
+    };
+    renderReadingSession(app);
+    return;
+  }
+  if (params.tab) readingLibraryTab = params.tab;
+  renderReadingLibrary(app);
+}
+
+function renderReadingLibrary(app) {
+  const lessons = _v5Lessons();
+  const studyDay = getStudyDay(appSettings);
+  const daily = lessons.find(l => l.day === studyDay) || lessons[0];
+  const stats = daily ? _v5ReadingStats(daily) : null;
+  const saved = _v5Read('wec_saved_sentences', []);
+  const readHistory = _v5Read('wec_reading_history', []);
+  const readDays = new Set(readHistory.map(r => r.day));
+
+  app.innerHTML = `
+    <div class="container page v5-reading-library">
+      <header class="v5-page-head">
+        <div><div class="v5-eyebrow">WORK READING</div><h1>工作阅读</h1><p>读真实工作内容，把词和句子连起来。</p></div>
+        <button class="btn btn-ghost btn-sm" onclick="navTo('today')">返回</button>
+      </header>
+      <div class="v5-segmented">
+        <button class="${readingLibraryTab === 'articles' ? 'active' : ''}" onclick="v5ReadingTab('articles')">短文 ${lessons.length}</button>
+        <button class="${readingLibraryTab === 'sentences' ? 'active' : ''}" onclick="v5ReadingTab('sentences')">工作句子 ${typeof KNOWLEDGE_ITEMS !== 'undefined' ? KNOWLEDGE_ITEMS.length : 0}</button>
+        <button class="${readingLibraryTab === 'saved' ? 'active' : ''}" onclick="v5ReadingTab('saved')">句子本 ${saved.length}</button>
+      </div>
+      <div id="v5-reading-content">
+        ${readingLibraryTab === 'articles' ? _v5ArticleLibraryHTML(lessons, daily, stats, readDays)
+          : readingLibraryTab === 'sentences' ? _v5SentenceLibraryHTML() : _v5SavedSentenceHTML()}
+      </div>
+    </div>
+  `;
+}
+function v5ReadingTab(tab) {
+  readingLibraryTab = tab;
+  renderReadingLibrary(document.getElementById('app'));
+}
+function _v5ArticleLibraryHTML(lessons, daily, stats, readDays) {
+  const categories = ['全部', '进度汇报', '沟通问答', '邮件协作', '问题处理', '日常协作'];
+  let filtered = lessons.filter(l => readingCategoryFilter === '全部' || _v5Category(l) === readingCategoryFilter);
+  const visible = readingLibraryExpanded ? filtered : filtered.slice(0, 8);
+  return `
+    <section class="v5-daily-reading">
+      <div class="v5-daily-badge">TODAY · DAY ${daily.day}</div>
+      <h2>${daily.theme}</h2>
+      <p>${daily.listening.title || daily.theme_en}</p>
+      <div class="v5-reading-tags"><span>${stats.level}</span><span>${stats.words} 词</span><span>高频覆盖 ${stats.coverage}%</span><span>约 ${stats.minutes} 分钟</span></div>
+      <button class="btn btn-primary btn-block" onclick="navTo('reading',{day:${daily.day}})">开始阅读 →</button>
+    </section>
+    <div class="v5-filter-row">${categories.map(c => `<button class="v5-filter-chip ${readingCategoryFilter === c ? 'active' : ''}" onclick="v5ReadingCategory('${c}')">${c}</button>`).join('')}</div>
+    <div class="v5-list-heading"><h3>全部工作短文</h3><span>${filtered.length} 篇</span></div>
+    <div class="v5-article-list">
+      ${visible.map(l => {
+        const st = _v5ReadingStats(l);
+        return `<article class="v5-article-row" onclick="navTo('reading',{day:${l.day}})">
+          <div class="v5-article-day">D${l.day}</div>
+          <div class="v5-article-copy"><strong>${l.theme}</strong><span>${_v5Category(l)} · ${st.words} 词 · ${st.level}</span></div>
+          ${readDays.has(l.day) ? '<span class="v5-read-done">已读</span>' : '<span class="v5-row-arrow">›</span>'}
+        </article>`;
+      }).join('') || '<div class="empty-state"><p>这个分类暂时没有文章</p></div>'}
+    </div>
+    ${filtered.length > 8 ? `<button class="btn btn-ghost btn-block" onclick="readingLibraryExpanded=${readingLibraryExpanded ? 'false' : 'true'};renderReadingLibrary(document.getElementById('app'))">${readingLibraryExpanded ? '收起' : '查看全部 ' + filtered.length + ' 篇'}</button>` : ''}
+  `;
+}
+function v5ReadingCategory(category) {
+  readingCategoryFilter = category;
+  renderReadingLibrary(document.getElementById('app'));
+}
+function _v5SentenceLibraryHTML() {
+  const all = typeof KNOWLEDGE_ITEMS !== 'undefined' ? KNOWLEDGE_ITEMS : [];
+  const q = readingSearch.trim().toLowerCase();
+  const filtered = all.filter(item => !q || `${item.english} ${item.chinese} ${item.work_context || ''}`.toLowerCase().includes(q));
+  const visible = (readingSentenceExpanded || q) ? filtered : filtered.slice(0, 12);
+  return `
+    <div class="v5-sentence-intro"><strong>一句一句积累工作表达</strong><span>每句都能播放、点词、收藏；先说和写不强制。</span></div>
+    <div class="v5-search-bar"><input id="v5-sentence-search" value="${_v5Esc(readingSearch)}" placeholder="搜索英文、中文或场景" onkeypress="if(event.key==='Enter')v5ApplySentenceSearch()"><button onclick="v5ApplySentenceSearch()">搜索</button></div>
+    <div class="v5-sentence-list">
+      ${visible.map((item, i) => `<article class="v5-sentence-card">
+        <div class="v5-sentence-en">${_v5Gloss(item.english)}</div>
+        <div class="v5-sentence-cn">${_v5Esc(item.chinese)}</div>
+        ${item.example_sentence && item.example_sentence !== item.english ? `<div class="v5-sentence-example">${_v5Gloss(item.example_sentence)}</div>` : ''}
+        <div class="v5-sentence-foot"><span>${_v5Esc(item.work_context || item.type || '工作表达')}</span><div><button onclick="v5PlayKnowledgeSentence('${item.id}')">🔊</button><button onclick="v5SaveSentence('${item.id}')">☆ 收藏</button></div></div>
+      </article>`).join('') || '<div class="empty-state"><p>没有找到相关句子</p></div>'}
+    </div>
+    ${filtered.length > 12 && !q ? `<button class="btn btn-ghost btn-block" onclick="readingSentenceExpanded=${readingSentenceExpanded ? 'false' : 'true'};renderReadingLibrary(document.getElementById('app'))">${readingSentenceExpanded ? '收起' : '查看全部 ' + filtered.length + ' 句'}</button>` : ''}
+  `;
+}
+function v5PlayKnowledgeSentence(id) {
+  const item = (typeof KNOWLEDGE_ITEMS !== 'undefined' ? KNOWLEDGE_ITEMS : []).find(i => i.id === id);
+  if (item) _v5Speak(item.english);
+}
+function v5ApplySentenceSearch() {
+  const input = document.getElementById('v5-sentence-search');
+  readingSearch = input ? input.value : '';
+  renderReadingLibrary(document.getElementById('app'));
+}
+function _v5SavedSentenceHTML() {
+  const saved = _v5Read('wec_saved_sentences', []);
+  if (!saved.length) return '<div class="empty-state v5-empty"><div style="font-size:42px">☆</div><h3>句子本还是空的</h3><p>阅读或浏览工作句子时点“收藏”，以后来这里复习。</p></div>';
+  return `<div class="v5-sentence-list">${saved.slice().reverse().map((s, reverseIdx) => {
+    const idx = saved.length - 1 - reverseIdx;
+    return `<article class="v5-sentence-card"><div class="v5-sentence-en">${_v5Gloss(s.text)}</div>${s.chinese ? `<div class="v5-sentence-cn">${_v5Esc(s.chinese)}</div>` : ''}<div class="v5-sentence-foot"><span>${s.source || '我的工作句子'}</span><div><button onclick='v5PlaySaved(${idx})'>🔊</button><button onclick='v5RemoveSaved(${idx})'>移除</button></div></div></article>`;
+  }).join('')}</div>`;
+}
+function v5SaveSentence(sourceId, directText, chinese, source) {
+  const saved = _v5Read('wec_saved_sentences', []);
+  let text = directText || '';
+  if (!text && sourceId && typeof KNOWLEDGE_ITEMS !== 'undefined') {
+    const item = KNOWLEDGE_ITEMS.find(i => i.id === sourceId);
+    if (item) { text = item.english; chinese = item.chinese; source = item.work_context || '工作句子库'; }
+  }
+  if (!text) return;
+  if (saved.some(s => s.text === text)) { showToast('这句已经在句子本里'); return; }
+  saved.push({ text, chinese: chinese || '', source: source || '工作阅读', addedAt: Date.now() });
+  _v5Write('wec_saved_sentences', saved);
+  showToast('已收进句子本');
+}
+function v5PlaySaved(idx) {
+  const saved = _v5Read('wec_saved_sentences', []);
+  if (saved[idx]) _v5Speak(saved[idx].text);
+}
+function v5RemoveSaved(idx) {
+  const saved = _v5Read('wec_saved_sentences', []);
+  saved.splice(idx, 1);
+  _v5Write('wec_saved_sentences', saved);
+  renderReadingLibrary(document.getElementById('app'));
+}
+
+// ---------------------------------------------------------------------------
+// 阅读学习：逐句读 + 点词 + 播放 + 收藏 + 理解题
+// ---------------------------------------------------------------------------
+function renderReadingSession(app) {
+  const lesson = _v5Lessons().find(l => l.day === readingState.day) || _v5Lessons()[0];
+  if (!lesson) { app.innerHTML = '<div class="container page"><div class="empty-state">暂无阅读材料</div></div>'; return; }
+  if (readingState.phase === 'quiz') { renderReadingQuiz(app, lesson); return; }
+  if (readingState.phase === 'done') { renderReadingDone(app, lesson); return; }
+  const stats = _v5ReadingStats(lesson);
+  const sentences = _v5Sentences(lesson.listening.text);
+  const lower = lesson.listening.text.toLowerCase();
+  const matchedVocab = (typeof VOCAB_ITEMS !== 'undefined' ? VOCAB_ITEMS : [])
+    .filter(v => v.word && lower.includes(String(v.word).toLowerCase())).slice(0, 8);
+
+  app.innerHTML = `
+    <div class="container page v5-reading-session">
+      <header class="v5-reading-nav"><button onclick="${readingState.isSession ? "navTo('today')" : "navTo('reading')"}">← 返回</button><span>工作阅读 · Day ${lesson.day}</span><button onclick="v5FinishReading()">完成</button></header>
+      <div class="v5-reading-title"><div class="v5-eyebrow">${_v5Category(lesson)} · ${stats.level}</div><h1>${lesson.theme}</h1><p>${lesson.listening.title || lesson.theme_en}</p></div>
+      <div class="v5-reading-toolbar">
+        <button onclick="v5PlayCurrentReading(0.92)">▶ 播放全文</button>
+        <button onclick="v5PlayCurrentReading(0.78)">🐢 慢速</button>
+        <span>${stats.words} 词 · ${stats.sentences} 句</span>
+      </div>
+      <div class="v5-reading-paper">
+        ${sentences.map((s, i) => `<div class="v5-reading-line" id="reading-line-${i}"><span class="v5-line-no">${String(i + 1).padStart(2, '0')}</span><div class="v5-line-text">${_v5Gloss(s)}</div><div class="v5-line-actions"><button title="播放本句" onclick='v5PlayReadingSentence(${i})'>▶</button><button title="收藏本句" onclick='v5SaveReadingSentence(${i})'>☆</button></div></div>`).join('')}
+      </div>
+      ${matchedVocab.length ? `<section class="v5-reading-vocab"><h3>本篇学过的词</h3><div>${matchedVocab.map(v => `<span><strong>${v.word}</strong> ${_v5Esc(v.chinese)}</span>`).join('')}</div></section>` : ''}
+      <p class="v5-reading-hint">点任意单词查释义；点 ▶ 听单句；点 ☆ 收进句子本。</p>
+      <button class="btn btn-primary btn-block btn-lg" onclick="v5StartReadingQuiz()">读懂了，做理解题 →</button>
+      <button class="btn btn-ghost btn-block" onclick="v5FinishReading()">不做题，标记已读</button>
+    </div>
+  `;
+}
+function v5PlayCurrentReading(rate) {
+  const lesson = _v5Lessons().find(l => l.day === readingState.day);
+  if (lesson) _v5Speak(lesson.listening.text, rate);
+}
+function v5PlayReadingSentence(idx) {
+  const lesson = _v5Lessons().find(l => l.day === readingState.day);
+  const s = _v5Sentences(lesson.listening.text)[idx];
+  if (s) _v5Speak(s);
+}
+function v5SaveReadingSentence(idx) {
+  const lesson = _v5Lessons().find(l => l.day === readingState.day);
+  const s = _v5Sentences(lesson.listening.text)[idx];
+  if (s) v5SaveSentence(null, s, '', `Day ${lesson.day} · ${lesson.theme}`);
+}
+function v5StartReadingQuiz() {
+  readingState.phase = 'quiz';
+  readingState.quizIdx = 0;
+  readingState.answered = false;
+  renderReadingSession(document.getElementById('app'));
+}
+function v5FinishReading() {
+  readingState.phase = 'done';
+  renderReadingSession(document.getElementById('app'));
+}
+function renderReadingQuiz(app, lesson) {
+  const questions = lesson.listening.comprehension_questions || [];
+  if (!questions.length) { v5FinishReading(); return; }
+  if (readingState.quizIdx >= questions.length) { v5FinishReading(); return; }
+  const q = questions[readingState.quizIdx];
+  const correctIdx = (typeof _resolveCorrectIdx === 'function') ? _resolveCorrectIdx(q) : q.options.indexOf(q.a);
+  app.innerHTML = `
+    <div class="container page v5-reading-session">
+      <header class="v5-reading-nav"><button onclick="readingState.phase='read';renderReadingSession(document.getElementById('app'))">← 再读一遍</button><span>阅读理解</span><span>${readingState.quizIdx + 1} / ${questions.length}</span></header>
+      <div class="v5-quiz-progress"><div style="width:${readingState.quizIdx / questions.length * 100}%"></div></div>
+      <section class="v5-quiz-card"><div class="v5-eyebrow">QUESTION ${readingState.quizIdx + 1}</div><h2 id="v5-reading-stem">${_v5Esc(_v5QuestionStem(q))}</h2></section>
+      <div class="v5-reading-options">
+        ${q.options.map((opt, i) => `<button id="v5-reading-opt-${i}" class="v5-reading-option" onclick="v5AnswerReading(${i})"><span>${String.fromCharCode(65 + i)}</span><div class="v5-option-text">${_v5Esc(opt)}</div></button>`).join('')}
+      </div>
+      <div id="v5-reading-feedback"></div>
+    </div>
+  `;
+  readingState.correctIdx = correctIdx;
+  readingState.answered = false;
+}
+function v5AnswerReading(selected) {
+  if (readingState.answered) return;
+  readingState.answered = true;
+  const lesson = _v5Lessons().find(l => l.day === readingState.day);
+  const q = lesson.listening.comprehension_questions[readingState.quizIdx];
+  const correct = selected === readingState.correctIdx;
+  if (correct) readingState.correct++;
+  readingState.results.push({ q: q.q, selected, correct });
+  q.options.forEach((opt, i) => {
+    const el = document.getElementById(`v5-reading-opt-${i}`);
+    if (!el) return;
+    el.classList.add('answered');
+    el.removeAttribute('onclick');
+    if (i === readingState.correctIdx) el.classList.add('correct');
+    else if (i === selected) el.classList.add('incorrect');
+    const text = el.querySelector('.v5-option-text');
+    if (text) text.innerHTML = _v5Gloss(opt);
+  });
+  const stem = document.getElementById('v5-reading-stem');
+  if (stem) stem.innerHTML = _v5Gloss(_v5QuestionStem(q));
+  const src = q.src || (typeof _findSourceSentence === 'function' ? _findSourceSentence(lesson.listening.text, q.a) : '');
+  readingState.lastSource = src;
+  document.getElementById('v5-reading-feedback').innerHTML = `
+    <section class="v5-reading-feedback-card ${correct ? 'correct' : 'incorrect'}">
+      <strong>${correct ? '✓ 理解正确' : '✗ 再对照原文看看'}</strong>
+      <p>正确答案：${_v5Gloss(q.a)}</p>
+      ${q.explain ? `<p class="v5-explain">💡 ${_v5Esc(q.explain)}</p>` : ''}
+      ${src ? `<div class="v5-source-sentence"><span>原文依据句</span><p>${_v5Gloss(src)}</p><button onclick='v5PlayReadingSource()'>🔊 重听这句</button></div>` : ''}
+      <button class="btn btn-primary btn-block" onclick="v5NextReadingQuestion()">${readingState.quizIdx + 1 < lesson.listening.comprehension_questions.length ? '下一题 →' : '查看阅读结果 →'}</button>
+    </section>`;
+}
+function v5PlayReadingSource() { _v5Speak(readingState.lastSource || '', 0.88); }
+function v5NextReadingQuestion() {
+  readingState.quizIdx++;
+  readingState.answered = false;
+  renderReadingSession(document.getElementById('app'));
+}
+function renderReadingDone(app, lesson) {
+  const total = readingState.results.length;
+  const score = total ? Math.round(readingState.correct / total * 100) : null;
+  if (!readingState.recorded) {
+    const history = _v5Read('wec_reading_history', []).filter(r => r.day !== readingState.day);
+    history.push({ day: readingState.day, completedAt: Date.now(), score, total });
+    _v5Write('wec_reading_history', history);
+    readingState.recorded = true;
+  }
+  app.innerHTML = `
+    <div class="container page v5-reading-session">
+      <section class="v5-reading-done">
+        <div class="v5-done-mark">✓</div><div class="v5-eyebrow">READING COMPLETE</div><h1>读完一篇工作短文</h1>
+        <p>${lesson.theme}</p>
+        ${score !== null ? `<div class="v5-done-score"><strong>${score}%</strong><span>理解题 ${readingState.correct} / ${total} 正确</span></div>` : '<div class="v5-done-score"><strong>已读</strong><span>没有做理解题，也算一次有效阅读</span></div>'}
+        <div class="v5-done-actions">
+          <button class="btn btn-outline" onclick="readingState.phase='read';renderReadingSession(document.getElementById('app'))">再读一遍</button>
+          <button class="btn btn-primary" onclick="${readingState.isSession ? 'nextSessionStep()' : "navTo('reading')"}">${readingState.isSession ? '继续今日复习 →' : '回到文章库 →'}</button>
+        </div>
+      </section>
+    </div>
+  `;
+}
 
   </script>
 </body>
