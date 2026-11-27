@@ -1055,6 +1055,61 @@ body:has(#wec-fallback-banner) { padding-top: 36px; }
   .bottom-nav { max-width: 480px; left: 50%; right: auto; width: 480px; transform: translateX(-50%); border-right: 1px solid var(--color-border-light); border-left: 1px solid var(--color-border-light); }
 }
 
+
+/* ===== V5.1: Day 49 听读双材料样板课 ===== */
+.v51-sample-hero { padding: 24px 21px; border-radius: 23px 23px 23px 7px; color: #f8f5ec; background: linear-gradient(145deg, #173e34, #265f4c); }
+.v51-sample-hero .v5-eyebrow { color: #b4d0c0; }
+.v51-sample-hero h1 { margin-top: 7px; font-size: 29px; line-height: 1.3; }
+.v51-sample-hero p { margin-top: 11px; color: #d2e0d7; font-size: 13px; line-height: 1.75; }
+.v51-listen-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin: 14px 0; }
+.v51-listen-steps > div { display: flex; align-items: flex-start; gap: 7px; min-height: 76px; padding: 12px 9px; border: 1px solid var(--color-border-light); border-radius: 14px; background: var(--color-bg-card); }
+.v51-listen-steps b { color: #8fab9b; font-family: Georgia, serif; font-size: 13px; font-style: italic; }
+.v51-listen-steps span { color: var(--color-text-light); font-size: 10px; line-height: 1.55; }
+.v51-listen-steps strong { color: var(--color-text); font-size: 12px; }
+.v51-keyword-card { margin-bottom: 16px; padding: 17px 16px; border-radius: 17px; background: #e8eee5; }
+.v51-keyword-card h3 { font-size: 14px; }
+.v51-keyword-card > div { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.v51-keyword-card span { padding: 5px 8px; border-radius: 8px; color: var(--color-text-secondary); background: rgba(255,255,255,.75); font-size: 11px; }
+.v51-keyword-card span b { color: var(--color-primary); }
+.v51-keyword-card p { margin-top: 10px; color: var(--color-text-light); font-size: 11px; }
+.v51-audio-card { margin-bottom: 14px; padding: 18px; border: 1px solid #d6e2d7; border-radius: 19px; background: #e8f0e8; }
+.v51-audio-card > div:first-child { color: var(--color-primary-light); font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+.v51-live-dot { display: inline-block; width: 7px; height: 7px; margin-right: 5px; border-radius: 50%; background: var(--color-primary-light); }
+.v51-audio-card h2 { margin: 8px 0 13px; font-size: 16px; line-height: 1.5; }
+.v51-audio-card > div:nth-child(3) { display: flex; gap: 8px; }
+.v51-audio-card p { margin-top: 9px; color: var(--color-text-light); font-size: 10px; }
+.v51-question-card { background: var(--color-primary-dark); }
+.v51-transfer-note { margin: 16px 0; padding: 16px; border-left: 3px solid var(--color-gold); border-radius: 0 14px 14px 0; background: #f2ebda; }
+.v51-transfer-note strong { font-size: 14px; }
+.v51-transfer-note p { margin-top: 4px; color: var(--color-text-secondary); font-size: 12px; line-height: 1.65; }
+.v51-transfer-banner { margin-bottom: 13px; padding: 12px 14px; border-radius: 13px; color: #67542e; background: #f2ebda; font-size: 12px; line-height: 1.65; }
+.v51-sentence-stack { display: grid; gap: 11px; margin-bottom: 16px; }
+.v51-sentence { padding: 16px 15px 12px; border: 1px solid var(--color-border-light); border-radius: 18px; background: var(--color-bg-card); box-shadow: var(--shadow-sm); }
+.v51-sentence-top { display: grid; grid-template-columns: 22px 1fr 40px; align-items: start; gap: 8px; }
+.v51-sentence-top > span { padding-top: 5px; color: #9bad9f; font-family: Georgia, serif; font-size: 10px; font-style: italic; }
+.v51-sentence-top > button { width: 40px; height: 40px; border: 0; border-radius: 12px; color: var(--color-primary); background: var(--color-mint-light); cursor: pointer; }
+.v51-sentence-cn { margin: 10px 0 0 30px; padding-top: 9px; border-top: 1px dashed var(--color-border); color: var(--color-text-secondary); font-size: 13px; line-height: 1.7; }
+.v51-chunks { display: flex; flex-wrap: wrap; gap: 6px; margin: 11px 0 0 30px; }
+.v51-chunks span { padding: 5px 7px; border-radius: 8px; color: var(--color-text-secondary); background: #edf1e9; font-size: 10px; line-height: 1.5; }
+.v51-chunks b { display: block; color: var(--color-primary); font-size: 11px; font-weight: 600; }
+.v51-structure { margin: 10px 0 0 30px; color: var(--color-text-light); font-size: 11px; line-height: 1.65; }
+.v51-save { min-height: 38px; margin: 8px 0 0 24px; padding: 5px 8px; border: 0; color: var(--color-primary-light); background: transparent; font-size: 11px; cursor: pointer; }
+.v51-result { padding-top: 36px; }
+.v51-score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 22px 0 14px; }
+.v51-score-grid > div { display: flex; flex-direction: column; align-items: center; padding: 18px 10px; border-radius: 17px; background: var(--color-bg-card); }
+.v51-score-grid span { color: var(--color-text-secondary); font-size: 12px; }
+.v51-score-grid strong { margin: 4px 0; color: var(--color-primary); font-family: Georgia, serif; font-size: 34px; }
+.v51-score-grid small { color: var(--color-text-light); font-size: 10px; }
+.v51-result-note { margin-bottom: 18px; padding: 15px; border-radius: 15px; background: #e8eee5; text-align: left; }
+.v51-result-note strong { font-size: 13px; }
+.v51-result-note p { margin-top: 5px; color: var(--color-text-secondary); font-size: 11px; line-height: 1.7; }
+@media (max-width: 370px) {
+  .v51-listen-steps { gap: 5px; }
+  .v51-listen-steps > div { padding: 10px 6px; gap: 4px; }
+  .v51-sentence { padding-left: 12px; padding-right: 12px; }
+  .v51-sentence-cn, .v51-chunks, .v51-structure { margin-left: 0; }
+}
+
 </style>
 </head>
 <body>
@@ -12723,7 +12778,7 @@ async function renderToday(app) {
 
       <section class="v5-library-entry card-clickable" onclick="navTo('reading')">
         <div><span class="v5-library-icon">▤</span></div>
-        <div class="v5-library-copy"><strong>工作阅读与句子库</strong><span>76 篇短文 · 120 条工作句子 · 随时点词、播放、收藏</span></div>
+        <div class="v5-library-copy"><strong>工作阅读与句子库</strong><span>${_v5Lessons().length} 篇短文 · 120 条工作句子 · 随时点词、播放、收藏</span></div>
         <span>→</span>
       </section>
 
@@ -13030,6 +13085,373 @@ function renderReadingDone(app, lesson) {
       </section>
     </div>
   `;
+}
+
+// ===== js/sample-day49.js =====
+// ===== V5.1 Day 49 样板课：听力 A + 阅读 B，同词不同语境 =====
+// 仅在 Day 49 启用；其他课程继续使用 V5 原流程。
+const SAMPLE49 = {
+  day: 49,
+  theme: '补课：远程协调维修',
+  vocabIds: ['v-344', 'v-345', 'v-346', 'v-347', 'v-348', 'v-349', 'v-350'],
+  listening: {
+    title: 'Listening A · Repair Coordination',
+    text: `Hi everyone, before we start, please mute your microphones if you are not speaking. We are currently reviewing two repair cases that have recently caused complaints. The first case is an air conditioner that usually works well but stopped cooling last night. The supplier says the replacement part will probably arrive tomorrow, but that is not definite yet. Li Na is responsible for the owner update, and Chen Rui will check the responsibility matrix to confirm who should approve the temporary repair. We definitely need to tell the owner by 3 p.m. whether we can finish today. If the part does not arrive, we will offer a temporary unit and agree on a new completion time.`,
+    sentences: [
+      {
+        en: 'Hi everyone, before we start, please mute your microphones if you are not speaking.',
+        cn: '大家好，开始前，如果不发言，请把麦克风静音。',
+        chunks: [['before we start', '在开始之前'], ['mute your microphones', '把麦克风静音'], ['if you are not speaking', '如果你不发言']],
+        structure: 'please 后接动词原形提出礼貌要求；if 说明需要静音的情况。'
+      },
+      {
+        en: 'We are currently reviewing two repair cases that have recently caused complaints.',
+        cn: '我们目前正在检查两个最近引发投诉的维修工单。',
+        chunks: [['are currently reviewing', '目前正在检查'], ['repair cases', '维修工单'], ['caused complaints', '引发投诉']],
+        structure: 'that 引导修饰 cases 的从句，说明是“哪些工单”。'
+      },
+      {
+        en: 'The first case is an air conditioner that usually works well but stopped cooling last night.',
+        cn: '第一个工单是一台通常运行良好、但昨晚突然不制冷的空调。',
+        chunks: [['works well', '运行良好'], ['stopped cooling', '停止制冷'], ['last night', '昨晚']],
+        structure: 'but 连接“通常良好”和“昨晚故障”这一反差。'
+      },
+      {
+        en: 'The supplier says the replacement part will probably arrive tomorrow, but that is not definite yet.',
+        cn: '供应商说替换件明天可能会到，但这一点还不确定。',
+        chunks: [['replacement part', '替换件'], ['will probably arrive', '可能会到'], ['not definite yet', '尚不确定']],
+        structure: 'probably 表示可能性，不等于承诺；but 后才是需要注意的限制。'
+      },
+      {
+        en: 'Li Na is responsible for the owner update, and Chen Rui will check the responsibility matrix to confirm who should approve the temporary repair.',
+        cn: '李娜负责向业主同步进展，陈睿会查看职责分工表，确认谁应该批准临时维修。',
+        chunks: [['is responsible for', '负责'], ['owner update', '向业主同步进展'], ['responsibility matrix', '职责分工表'], ['approve the temporary repair', '批准临时维修']],
+        structure: 'and 连接两个人的分工；to confirm 说明查看分工表的目的。'
+      },
+      {
+        en: 'We definitely need to tell the owner by 3 p.m. whether we can finish today.',
+        cn: '我们必须在下午三点前告诉业主，今天能否完成。',
+        chunks: [['definitely need to', '确实必须'], ['by 3 p.m.', '最迟下午三点'], ['whether we can finish', '我们能否完成']],
+        structure: 'by 表示“最迟不超过”；whether 引出需要告知业主的不确定事项。'
+      },
+      {
+        en: 'If the part does not arrive, we will offer a temporary unit and agree on a new completion time.',
+        cn: '如果替换件不到，我们会提供一台临时设备，并约定新的完成时间。',
+        chunks: [['If the part does not arrive', '如果替换件不到'], ['temporary unit', '临时设备'], ['agree on', '商定'], ['completion time', '完成时间']],
+        structure: 'If 描述备选方案成立的条件；and 连接两项后续动作。'
+      }
+    ],
+    questions: [
+      {
+        q: '这段会议发言的主要目的是什么？', type: '主旨理解',
+        options: ['To coordinate repairs and owner updates.', 'To approve a new equipment budget.', 'To postpone every repair until next week.', 'To complain about the remote meeting.'],
+        a: 'To coordinate repairs and owner updates.', src: 'We are currently reviewing two repair cases that have recently caused complaints.',
+        explain: '发言依次说明了故障情况、人员分工、业主沟通和备选方案，核心是在协调维修，而不是审批预算或全面停工。'
+      },
+      {
+        q: '关于替换件，哪项信息仍不确定？', type: '细节理解',
+        options: ['Who manufactured it.', 'Whether it will arrive tomorrow.', 'Who will install it.', 'How much it costs.'],
+        a: 'Whether it will arrive tomorrow.', src: 'The supplier says the replacement part will probably arrive tomorrow, but that is not definite yet.',
+        explain: 'probably 和 not definite yet 都说明“明天到”只是可能，并非确定承诺。'
+      },
+      {
+        q: '下午三点前必须完成什么？', type: '细节理解',
+        options: ['Finish both repairs.', 'Receive the replacement part.', 'Tell the owner whether today’s completion is possible.', 'Update the responsibility matrix.'],
+        a: 'Tell the owner whether today’s completion is possible.', src: 'We definitely need to tell the owner by 3 p.m. whether we can finish today.',
+        explain: '三点是向业主给出明确说法的最后期限，不是必须修好设备或收到配件的期限。'
+      },
+      {
+        q: '如果替换件明天没有到，团队最可能怎么做？', type: '情境推断',
+        options: ['Cancel the repair without telling the owner.', 'Wait without changing the schedule.', 'Ask the owner to repair it.', 'Provide a temporary unit and set a new completion time.'],
+        a: 'Provide a temporary unit and set a new completion time.', src: 'If the part does not arrive, we will offer a temporary unit and agree on a new completion time.',
+        explain: '最后一句已经给出配件未到时的备选方案：先提供临时设备，再重新约定完成时间。'
+      }
+    ]
+  },
+  reading: {
+    title: 'Reading B · A Different Repair Case',
+    text: `During today's remote handover, everyone was asked to mute themselves while the technician spoke. We recently received a complaint about a washing machine on the eighth floor. It is currently out of service because the control panel is not responding. The technician usually replaces this part within an hour, and he will probably finish before noon. However, we definitely need the owner's approval before ordering it. According to the responsibility matrix, Mei should get that approval while Liu updates the ticket. After the repair, Liu will test the machine and send the owner a short completion message.`,
+    sentences: [
+      {
+        en: "During today's remote handover, everyone was asked to mute themselves while the technician spoke.",
+        cn: '在今天的远程交接会上，技师讲话时，所有人都被要求保持静音。',
+        chunks: [['remote handover', '远程交接'], ['was asked to', '被要求'], ['mute themselves', '将自己静音'], ['while the technician spoke', '技师讲话时']],
+        structure: 'was asked 是被动表达；while 说明两个动作同时发生。'
+      },
+      {
+        en: 'We recently received a complaint about a washing machine on the eighth floor.',
+        cn: '我们最近收到一个关于八楼洗衣机的投诉。',
+        chunks: [['received a complaint', '收到投诉'], ['washing machine', '洗衣机'], ['on the eighth floor', '在八楼']],
+        structure: 'about 说明投诉内容；on 表示所在楼层。'
+      },
+      {
+        en: 'It is currently out of service because the control panel is not responding.',
+        cn: '它目前暂停使用，因为控制面板没有响应。',
+        chunks: [['currently', '目前'], ['out of service', '暂停使用'], ['control panel', '控制面板'], ['not responding', '没有响应']],
+        structure: '句子主干是 It is out of service；because 后面说明停用原因。'
+      },
+      {
+        en: 'The technician usually replaces this part within an hour, and he will probably finish before noon.',
+        cn: '技师通常在一小时内换掉这个部件，他大概会在中午前完成。',
+        chunks: [['usually replaces', '通常更换'], ['within an hour', '一小时内'], ['probably finish', '大概会完成'], ['before noon', '中午前']],
+        structure: 'usually 描述一般耗时；probably 表示这次中午前完成只是预计。'
+      },
+      {
+        en: "However, we definitely need the owner's approval before ordering it.",
+        cn: '但是，在订购这个部件之前，我们肯定需要业主的批准。',
+        chunks: [["owner's approval", '业主的批准'], ['before ordering it', '订购之前'], ['definitely need', '确实需要']],
+        structure: 'However 表示转折；before 后面说明订购前必须满足的条件。'
+      },
+      {
+        en: 'According to the responsibility matrix, Mei should get that approval while Liu updates the ticket.',
+        cn: '根据职责分工表，梅负责取得批准，刘则同时更新工单。',
+        chunks: [['According to', '根据'], ['responsibility matrix', '职责分工表'], ['get that approval', '取得批准'], ['updates the ticket', '更新工单']],
+        structure: 'while 在这里表示两个人并行处理不同任务。'
+      },
+      {
+        en: 'After the repair, Liu will test the machine and send the owner a short completion message.',
+        cn: '维修后，刘会测试机器，并给业主发一条简短的完工通知。',
+        chunks: [['After the repair', '维修后'], ['test the machine', '测试机器'], ['completion message', '完工通知']],
+        structure: 'After 明确动作顺序；and 连接测试和通知两个后续步骤。'
+      }
+    ],
+    questions: [
+      {
+        q: '这篇短文主要在讲什么？', type: '主旨理解',
+        options: ['A washing-machine repair and the approval process.', 'A complaint about a noisy remote meeting.', 'A request to buy a new air conditioner.', 'A training session for new technicians.'],
+        a: 'A washing-machine repair and the approval process.', src: 'It is currently out of service because the control panel is not responding.',
+        explain: '全文围绕洗衣机故障、配件订购前的审批以及维修后的通知展开。'
+      },
+      {
+        q: '洗衣机为什么目前不能使用？', type: '细节理解',
+        options: ['The power on the eighth floor is off.', 'The control panel is not responding.', 'The owner refused the repair.', 'The technician is unavailable.'],
+        a: 'The control panel is not responding.', src: 'It is currently out of service because the control panel is not responding.',
+        explain: 'because 后直接给出停用原因：控制面板没有响应。'
+      },
+      {
+        q: '关于“中午前完成”，下列哪项理解最准确？', type: '逻辑推断',
+        options: ['It is guaranteed by the owner.', 'It is impossible because the part is unavailable.', 'It is likely, but ordering still requires approval.', 'It will happen only after the ticket is closed.'],
+        a: 'It is likely, but ordering still requires approval.', src: "However, we definitely need the owner's approval before ordering it.",
+        explain: 'probably finish before noon 表示预计；However 后补充了订购前必须获批的条件，因此不能把中午前完成理解为保证。'
+      },
+      {
+        q: '维修完成后，谁负责让业主知道结果？', type: '职责判断',
+        options: ['Mei.', 'The technician.', 'Liu.', 'The owner.'],
+        a: 'Liu.', src: 'After the repair, Liu will test the machine and send the owner a short completion message.',
+        explain: '最后一句明确说明 Liu 会测试机器并向业主发送完工通知；Mei 负责的是取得批准。'
+      }
+    ]
+  }
+};
+
+// 把原“休息日”替换为可学习的补课日；阅读 B 由下方专用渲染器提供。
+(function _sample49InstallLesson() {
+  const lesson = DAILY_LESSONS.find(l => l.day === 49);
+  if (!lesson) return;
+  lesson.theme = SAMPLE49.theme;
+  lesson.theme_en = 'Catch-up: Repair Coordination';
+  lesson.listening = {
+    title: SAMPLE49.listening.title,
+    text: SAMPLE49.listening.text,
+    keywords: ['mute', 'currently', 'recently', 'usually', 'probably', 'definitely', 'responsibility matrix'],
+    comprehension_questions: SAMPLE49.listening.questions,
+    mode: 'study'
+  };
+})();
+
+const _sample49BaseStats = _v5ReadingStats;
+_v5ReadingStats = function (lesson) {
+  if (lesson && lesson.day === 49) {
+    return _sample49BaseStats({ listening: { text: SAMPLE49.reading.text } });
+  }
+  return _sample49BaseStats(lesson);
+};
+
+function _sample49IsDay() { return getStudyDay(appSettings) === 49; }
+function _sample49Speak(text, rate) { SpeechUtils.speak(String(text || ''), { rate: rate || 0.92 }); }
+function _sample49Store(patch) {
+  const prev = _v5Read('wec_sample49', {});
+  _v5Write('wec_sample49', Object.assign({}, prev, patch));
+}
+async function _sample49RecordExposures(channel) {
+  const key = `wec_sample49_exposure_${channel}`;
+  if (_v5Read(key, false)) return;
+  _v5Write(key, true);
+  for (const id of SAMPLE49.vocabIds) {
+    try { await _noteExposureAsync(id); } catch (e) {}
+  }
+  try {
+    await dbPut(STORES.learningAttempts, {
+      id: uuid(), item_id: `sample49-${channel}`, date: todayStr(), timestamp: Date.now(),
+      rating: 'good', success: true, dimension: `${channel}_context`, quiz_type: 'context_exposure'
+    });
+  } catch (e) {}
+}
+
+// ---------------------------------------------------------------------------
+// 听力 A：主旨 → 细节/推断 → 逐句原文
+// ---------------------------------------------------------------------------
+let sample49Listening = null;
+const _sample49BaseListening = renderListening;
+renderListening = async function (app, params = {}) {
+  if (!_sample49IsDay()) return _sample49BaseListening(app, params);
+  sample49Listening = { phase: 'intro', qIdx: 0, answers: [], played: 0 };
+  _renderSample49Listening(app);
+};
+function _sample49CurrentQuestion() { return SAMPLE49.listening.questions[sample49Listening.qIdx]; }
+function _renderSample49Listening(app) {
+  const s = sample49Listening;
+  if (s.phase === 'transcript') { _renderSample49Transcript(app); return; }
+  if (s.phase === 'intro') {
+    app.innerHTML = `<div class="container page v5-reading-session">
+      ${currentSession ? renderSessionBar(0) : ''}
+      <header class="v5-reading-nav"><button onclick="navTo('today')">← 返回</button><span>样板课 · 听力 A</span><span>约 6 分钟</span></header>
+      <section class="v51-sample-hero"><div class="v5-eyebrow">LISTEN FOR MEANING</div><h1>先听懂事情，<br>再对照句子。</h1><p>一段新的远程维修协调发言。第一遍抓主旨，之后听细节和推断，最后才看原文。</p></section>
+      <section class="v51-listen-steps"><div><b>01</b><span>不看原文<br><strong>听主旨</strong></span></div><div><b>02</b><span>随时重听<br><strong>抓细节</strong></span></div><div><b>03</b><span>逐句中英<br><strong>核对理解</strong></span></div></section>
+      <section class="v51-keyword-card"><h3>本课四个提示</h3><div><span><b>mute</b> 静音</span><span><b>probably</b> 可能</span><span><b>definitely</b> 肯定</span><span><b>responsibility matrix</b> 职责分工表</span></div><p>不用先背下来，听的时候留意它们。</p></section>
+      <button class="btn btn-primary btn-block btn-lg" onclick="_sample49BeginQuestions()">开始第一遍听力 →</button>
+    </div>`;
+    return;
+  }
+  const q = _sample49CurrentQuestion();
+  const result = s.answers[s.qIdx];
+  app.innerHTML = `<div class="container page v5-reading-session">
+    ${currentSession ? renderSessionBar(0) : ''}
+    <header class="v5-reading-nav"><button onclick="${s.qIdx > 0 ? '_sample49PrevListenQuestion()' : "sample49Listening.phase='intro';_renderSample49Listening(document.getElementById('app'))"}">← ${s.qIdx > 0 ? '上一题' : '听力说明'}</button><span>听力 A · ${q.type}</span><span>${s.qIdx + 1} / ${SAMPLE49.listening.questions.length}</span></header>
+    <div class="v5-quiz-progress"><div style="width:${s.qIdx / SAMPLE49.listening.questions.length * 100}%"></div></div>
+    <section class="v51-audio-card"><div><span class="v51-live-dot"></span> REPAIR COORDINATION</div><h2>${s.qIdx === 0 ? '先听整段，判断在解决什么事' : '可以重听，重点抓人物、时间和条件'}</h2><div><button class="btn btn-primary" onclick="_sample49PlayListening(0.94)">▶ ${s.played ? '再听一遍' : '播放听力'}</button><button class="btn btn-ghost" onclick="_sample49PlayListening(0.78)">🐢 慢速</button></div><p>此阶段不显示原文 · 已播放 ${s.played} 次</p></section>
+    <section class="v5-quiz-card v51-question-card"><div class="v5-eyebrow">${q.type}</div><h2>${q.q}</h2></section>
+    <div class="v5-reading-options">${q.options.map((opt, i) => {
+      let cls = '';
+      if (result) { cls = i === q.options.indexOf(q.a) ? 'correct answered' : i === result.selected ? 'incorrect answered' : 'answered'; }
+      return `<button class="v5-reading-option ${cls}" onclick="_sample49AnswerListening(${i})"><span>${String.fromCharCode(65 + i)}</span><div class="v5-option-text">${result ? _v5Gloss(opt) : _v5Esc(opt)}</div></button>`;
+    }).join('')}</div>
+    <div>${result ? _sample49ListeningFeedback(q, result) : ''}</div>
+  </div>`;
+}
+function _sample49PlayListening(rate) {
+  sample49Listening.played++;
+  _sample49Speak(SAMPLE49.listening.text, rate);
+  const p = document.querySelector('.v51-audio-card p');
+  if (p) p.textContent = `此阶段不显示原文 · 已播放 ${sample49Listening.played} 次`;
+}
+function _sample49BeginQuestions() { sample49Listening.phase = 'questions'; _renderSample49Listening(document.getElementById('app')); }
+function _sample49PrevListenQuestion() { sample49Listening.qIdx = Math.max(0, sample49Listening.qIdx - 1); _renderSample49Listening(document.getElementById('app')); }
+function _sample49AnswerListening(selected) {
+  const s = sample49Listening, q = _sample49CurrentQuestion();
+  if (s.answers[s.qIdx]) return;
+  const correct = q.options[selected] === q.a;
+  s.answers[s.qIdx] = { selected, correct };
+  _renderSample49Listening(document.getElementById('app'));
+}
+function _sample49ListeningFeedback(q, result) {
+  return `<section class="v5-reading-feedback-card ${result.correct ? 'correct' : 'incorrect'}"><strong>${result.correct ? '✓ 理解正确' : '✗ 再听关键句'}</strong><p>正确答案：${_v5Gloss(q.a)}</p><p class="v5-explain">💡 ${q.explain}</p><div class="v5-source-sentence"><span>原文依据句</span><p>${_v5Gloss(q.src)}</p><button onclick="_sample49Speak(SAMPLE49.listening.questions[sample49Listening.qIdx].src,0.84)">🔊 重听这句</button></div><button class="btn btn-primary btn-block" onclick="_sample49NextListening()">${sample49Listening.qIdx + 1 < SAMPLE49.listening.questions.length ? '下一题 →' : '查看逐句原文 →'}</button></section>`;
+}
+function _sample49NextListening() {
+  const s = sample49Listening;
+  if (!s.answers[s.qIdx]) return;
+  if (s.qIdx + 1 < SAMPLE49.listening.questions.length) {
+    s.qIdx++;
+    _renderSample49Listening(document.getElementById('app'));
+    return;
+  }
+  const correct = s.answers.filter(a => a && a.correct).length;
+  s.phase = 'transcript';
+  _sample49Store({ listeningScore: Math.round(correct / s.answers.length * 100), listeningCorrect: correct, listeningTotal: s.answers.length });
+  if (currentSession) currentSession.results.sampleListening = { correct, total: s.answers.length };
+  _renderSample49Listening(document.getElementById('app'));
+}
+function _renderSample49Transcript(app) {
+  const correct = sample49Listening.answers.filter(a => a && a.correct).length;
+  _sample49RecordExposures('listening');
+  app.innerHTML = `<div class="container page v5-reading-session">
+    ${currentSession ? renderSessionBar(0) : ''}
+    <header class="v5-reading-nav"><button onclick="sample49Listening.qIdx=SAMPLE49.listening.questions.length-1;sample49Listening.phase='questions';_renderSample49Listening(document.getElementById('app'))">← 回到题目</button><span>听力 A · 逐句核对</span><span>${correct} / 4 正确</span></header>
+    <div class="v5-reading-title"><div class="v5-eyebrow">TRANSCRIPT + CHUNKS</div><h1>现在对照原文</h1><p>每句先听，再看中文和语块；不用整句抄写。</p></div>
+    <div class="v5-reading-toolbar"><button onclick="_sample49Speak(SAMPLE49.listening.text,0.94)">▶ 播放全文</button><button onclick="_sample49Speak(SAMPLE49.listening.text,0.78)">🐢 慢速</button><span>${SAMPLE49.listening.sentences.length} 句</span></div>
+    <div class="v51-sentence-stack">${SAMPLE49.listening.sentences.map((s, i) => _sample49SentenceHTML(s, i, 'listening')).join('')}</div>
+    <section class="v51-transfer-note"><strong>接下来不是重读这篇</strong><p>阅读 B 是另一个维修案例。留意同一批词在新情境中的意思和搭配。</p></section>
+    <button class="btn btn-primary btn-block btn-lg" onclick="${currentSession ? 'nextSessionStep()' : "navTo('reading',{day:49})"}">进入阅读 B：新案例 →</button>
+  </div>`;
+}
+function _sample49SentenceHTML(s, i, channel) {
+  return `<article class="v51-sentence"><div class="v51-sentence-top"><span>${String(i + 1).padStart(2, '0')}</span><div class="v5-line-text">${_v5Gloss(s.en)}</div><button title="播放本句" onclick="_sample49Speak(SAMPLE49.${channel}.sentences[${i}].en,0.88)">▶</button></div><p class="v51-sentence-cn">${s.cn}</p><div class="v51-chunks">${s.chunks.map(c => `<span><b>${c[0]}</b>${c[1]}</span>`).join('')}</div><p class="v51-structure">句子提示：${s.structure}</p><button class="v51-save" onclick="v5SaveSentence(null,SAMPLE49.${channel}.sentences[${i}].en,SAMPLE49.${channel}.sentences[${i}].cn,'Day 49 样板课 · ${channel === 'listening' ? '听力 A' : '阅读 B'}')">☆ 收藏这句</button></article>`;
+}
+
+// ---------------------------------------------------------------------------
+// 阅读 B：新材料 + 逐句支持 + 主旨/细节/推断
+// ---------------------------------------------------------------------------
+let sample49Reading = null;
+const _sample49BaseReading = renderReading;
+renderReading = async function (app, params = {}) {
+  const day = Number(params.day) || getStudyDay(appSettings);
+  if ((params.day || params.session) && day === 49) {
+    sample49Reading = { phase: 'read', qIdx: 0, answers: [], showChinese: true, isSession: !!params.session, recorded: false };
+    _sample49RecordExposures('reading');
+    _renderSample49Reading(app);
+    return;
+  }
+  return _sample49BaseReading(app, params);
+};
+function _renderSample49Reading(app) {
+  const s = sample49Reading;
+  if (s.phase === 'done') { _renderSample49ReadingDone(app); return; }
+  if (s.phase === 'questions') { _renderSample49ReadingQuestion(app); return; }
+  app.innerHTML = `<div class="container page v5-reading-session">
+    ${currentSession ? renderSessionBar(1) : ''}
+    <header class="v5-reading-nav"><button onclick="${s.isSession ? "sample49Reading.phase='read';navTo('today')" : "navTo('reading')"}">← 返回</button><span>样板课 · 阅读 B</span><span>新案例</span></header>
+    <div class="v5-reading-title"><div class="v5-eyebrow">SAME WORDS · NEW CONTEXT</div><h1>另一个维修工单</h1><p>${SAMPLE49.reading.title}</p></div>
+    <section class="v51-transfer-banner">不是听力原文。请用刚学过的词，读懂这个新的洗衣机维修案例。</section>
+    <div class="v5-reading-toolbar"><button onclick="sample49Reading.showChinese=!sample49Reading.showChinese;_renderSample49Reading(document.getElementById('app'))">${s.showChinese ? '隐藏逐句中文' : '显示逐句中文'}</button><button onclick="_sample49Speak(SAMPLE49.reading.text,0.9)">▶ 听全文</button><span>先读英文，再核对</span></div>
+    <div class="v51-sentence-stack">${SAMPLE49.reading.sentences.map((sentence, i) => _sample49ReadingSentenceHTML(sentence, i, s.showChinese)).join('')}</div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="sample49Reading.phase='questions';_renderSample49Reading(document.getElementById('app'))">做真正的理解题 →</button>
+  </div>`;
+}
+function _sample49ReadingSentenceHTML(s, i, showChinese) {
+  return `<article class="v51-sentence"><div class="v51-sentence-top"><span>${String(i + 1).padStart(2, '0')}</span><div class="v5-line-text">${_v5Gloss(s.en)}</div><button title="播放本句" onclick="_sample49Speak(SAMPLE49.reading.sentences[${i}].en,0.88)">▶</button></div>${showChinese ? `<p class="v51-sentence-cn">${s.cn}</p>` : ''}<div class="v51-chunks">${s.chunks.map(c => `<span><b>${c[0]}</b>${c[1]}</span>`).join('')}</div><p class="v51-structure">句子提示：${s.structure}</p><button class="v51-save" onclick="v5SaveSentence(null,SAMPLE49.reading.sentences[${i}].en,SAMPLE49.reading.sentences[${i}].cn,'Day 49 样板课 · 阅读 B')">☆ 收藏这句</button></article>`;
+}
+function _renderSample49ReadingQuestion(app) {
+  const s = sample49Reading, q = SAMPLE49.reading.questions[s.qIdx], result = s.answers[s.qIdx];
+  app.innerHTML = `<div class="container page v5-reading-session">
+    ${currentSession ? renderSessionBar(1) : ''}
+    <header class="v5-reading-nav"><button onclick="${s.qIdx > 0 ? '_sample49PrevReadingQuestion()' : "sample49Reading.phase='read';_renderSample49Reading(document.getElementById('app'))"}">← ${s.qIdx > 0 ? '上一题' : '再读原文'}</button><span>阅读 B · ${q.type}</span><span>${s.qIdx + 1} / 4</span></header>
+    <div class="v5-quiz-progress"><div style="width:${s.qIdx / 4 * 100}%"></div></div>
+    <section class="v5-quiz-card"><div class="v5-eyebrow">${q.type}</div><h2>${q.q}</h2></section>
+    <div class="v5-reading-options">${q.options.map((opt, i) => {
+      let cls = '';
+      if (result) cls = i === q.options.indexOf(q.a) ? 'correct answered' : i === result.selected ? 'incorrect answered' : 'answered';
+      return `<button class="v5-reading-option ${cls}" onclick="_sample49AnswerReading(${i})"><span>${String.fromCharCode(65 + i)}</span><div class="v5-option-text">${result ? _v5Gloss(opt) : _v5Esc(opt)}</div></button>`;
+    }).join('')}</div>
+    ${result ? `<section class="v5-reading-feedback-card ${result.correct ? 'correct' : 'incorrect'}"><strong>${result.correct ? '✓ 理解正确' : '✗ 对照原文再想想'}</strong><p>正确答案：${_v5Gloss(q.a)}</p><p class="v5-explain">💡 ${q.explain}</p><div class="v5-source-sentence"><span>原文依据句</span><p>${_v5Gloss(q.src)}</p><button onclick="_sample49Speak(SAMPLE49.reading.questions[sample49Reading.qIdx].src,0.86)">🔊 重读这句</button></div><button class="btn btn-primary btn-block" onclick="_sample49NextReading()">${s.qIdx < 3 ? '下一题 →' : '查看样板课结果 →'}</button></section>` : ''}
+  </div>`;
+}
+function _sample49AnswerReading(selected) {
+  const s = sample49Reading, q = SAMPLE49.reading.questions[s.qIdx];
+  if (s.answers[s.qIdx]) return;
+  s.answers[s.qIdx] = { selected, correct: q.options[selected] === q.a };
+  _renderSample49Reading(document.getElementById('app'));
+}
+function _sample49PrevReadingQuestion() { sample49Reading.qIdx = Math.max(0, sample49Reading.qIdx - 1); _renderSample49Reading(document.getElementById('app')); }
+function _sample49NextReading() {
+  const s = sample49Reading;
+  if (!s.answers[s.qIdx]) return;
+  if (s.qIdx < 3) { s.qIdx++; _renderSample49Reading(document.getElementById('app')); return; }
+  s.phase = 'done';
+  _renderSample49Reading(document.getElementById('app'));
+}
+function _renderSample49ReadingDone(app) {
+  const s = sample49Reading;
+  const correct = s.answers.filter(a => a && a.correct).length;
+  const listening = _v5Read('wec_sample49', {});
+  if (!s.recorded) {
+    const history = _v5Read('wec_reading_history', []).filter(r => r.day !== 49);
+    history.push({ day: 49, completedAt: Date.now(), score: correct * 25, total: 4, sample: true });
+    _v5Write('wec_reading_history', history);
+    _sample49Store({ readingScore: correct * 25, readingCorrect: correct, readingTotal: 4, completedAt: Date.now() });
+    if (currentSession) currentSession.results.sampleReading = { correct, total: 4 };
+    s.recorded = true;
+  }
+  app.innerHTML = `<div class="container page v5-reading-session"><section class="v5-reading-done v51-result"><div class="v5-done-mark">✓</div><div class="v5-eyebrow">SAMPLE LESSON COMPLETE</div><h1>两种语境，都完成了</h1><p>听力 A 和阅读 B 不是同一篇，成绩更能反映真实理解。</p><div class="v51-score-grid"><div><span>听力 A</span><strong>${listening.listeningScore == null ? '—' : listening.listeningScore + '%'}</strong><small>${listening.listeningCorrect == null ? '本次未记录' : listening.listeningCorrect + ' / ' + listening.listeningTotal + ' 正确'}</small></div><div><span>阅读 B</span><strong>${correct * 25}%</strong><small>${correct} / 4 正确</small></div></div><section class="v51-result-note"><strong>这次记录的不只是“学完”</strong><p>本课 7 个目标词在听力、阅读中的各一次语境接触，已经写入词汇记忆记录。之后仍需要在不同材料里继续复现。</p></section><div class="v5-done-actions"><button class="btn btn-outline" onclick="sample49Reading.phase='read';_renderSample49Reading(document.getElementById('app'))">再读 B</button><button class="btn btn-primary" onclick="${s.isSession ? 'nextSessionStep()' : "navTo('reading')"}">${s.isSession ? '继续今日复习 →' : '回到文章库 →'}</button></div></section></div>`;
 }
 
   </script>
